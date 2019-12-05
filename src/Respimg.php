@@ -369,7 +369,16 @@
 
 			// if the alpha channel is not defined, make it opaque
 			if ($this->getImageAlphaChannel() == \Imagick::ALPHACHANNEL_UNDEFINED) {
-				$this->setImageAlphaChannel(\Imagick::ALPHACHANNEL_OPAQUE);
+				if ( defined( 'Imagick::ALPHACHANNEL_OFF' ) )
+				{
+					$channel = \Imagick::ALPHACHANNEL_OFF;
+				}
+				else
+				{
+					$channel = \Imagick::ALPHACHANNEL_OPAQUE;
+				}
+
+				$this->setImageAlphaChannel($channel);
 			}
 
 			// set the image’s bit depth to 8 bits
@@ -380,7 +389,7 @@
 
 			// Strip all profiles except color profiles.
 			foreach ($this->getImageProfiles('*', true) as $key => $value) {
-				if ($key != 'icc' && $key != 'icm') {
+				if ($key != 'icc' && $key != 'icm' && $key != 'iptc') {
 					$this->removeImageProfile($key);
 				}
 			}
