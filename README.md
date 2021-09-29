@@ -1,12 +1,8 @@
-**THIS REPO IS NOT MAINTAINED**
-
-# php-respimg
+# PhpImageOptimizer
 
 A responsive image workflow for optimizing and resizing your images.
 
-See also [grunt-respimg](https://www.npmjs.com/package/grunt-respimg).
-
-Full documentation available at <https://rawgit.com/nwtn/php-respimg/master/docs/index.html>.
+Originally based off (forked) <https://github.com/nwtn/php-respimg>
 
 ## Requirements/dependencies
 
