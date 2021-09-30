@@ -1,0 +1,2 @@
+Test USE_VARIANT changes.
+Enable USE_VARIANT changes, if appropriate.
