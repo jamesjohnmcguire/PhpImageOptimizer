@@ -5,6 +5,12 @@
  */
 
 namespace nwtn;
+
+if(defined('USE_VARIANTS'))
+{
+	// use Gumlet\ImageResize;
+}
+
 use JonnyW\PhantomJs\Client as Client;
 use JonnyW\PhantomJs\DependencyInjection\ServiceContainer as ServiceContainer;
 use JonnyW\PhantomJs\Message\Request as Request;
@@ -100,12 +106,29 @@ class Respimg extends \Imagick {
 			}
 		}
 
+		if(defined('USE_VARIANTS'))
+		{
+			$disableSVGO = 0 === $svgo ? '--no-svgo' : '';
+		}
+
 		// do the image_optim optimizations
 		for ($i = 0; $i < $image_optim; $i++) {
-			$command = escapeshellcmd('image_optim -r ' . $path . ' --config-paths ' . $yml);
+			if(defined('USE_VARIANTS'))
+			{
+				$command = escapeshellcmd('image_optim -r ' . $path . ' --config-paths ' . $yml . ' ' .$disableSVGO);
+			}
+			else
+			{
+				$command = escapeshellcmd('image_optim -r ' . $path . ' --config-paths ' . $yml);
+			}
 			exec($command, $output, $return_var);
 
 			if ($return_var != 0) {
+				if(defined('USE_VARIANTS'))
+				{
+					unlink($yml);
+				}
+
 				return false;
 			}
 		}
@@ -116,6 +139,11 @@ class Respimg extends \Imagick {
 			exec($command, $output, $return_var);
 
 			if ($return_var != 0) {
+				if(defined('USE_VARIANTS'))
+				{
+					unlink($yml);
+				}
+
 				return false;
 			}
 		}
@@ -124,14 +152,30 @@ class Respimg extends \Imagick {
 		// ImageOptim can’t handle the path with single quotes, so we have to strip them
 		// ImageOptim-CLI has an issue where it only works with a directory, not a single file
 		for ($i = 0; $i < $imageOptim; $i++) {
-			if ($is_dir) {
-				$command = escapeshellcmd('imageoptim -d ' . $path . ' -q');
-			} else {
-				$command = escapeshellcmd('find ' . $dir . ' -name ' . $file) . ' | imageoptim';
+			if(defined('USE_VARIANTS'))
+			{
+				if ($is_dir) {
+					$command = escapeshellcmd('imageoptim -d ' . $path . ' -q ' . $disableSVGO);
+				} else {
+					$command = escapeshellcmd('find ' . $dir . ' -name ' . $file) . ' | imageoptim ' . $disableSVGO;
+				}
+			}
+			else
+			{
+				if ($is_dir) {
+					$command = escapeshellcmd('imageoptim -d ' . $path . ' -q');
+				} else {
+					$command = escapeshellcmd('find ' . $dir . ' -name ' . $file) . ' | imageoptim';
+				}
 			}
 			exec($command, $output, $return_var);
 
 			if ($return_var != 0) {
+				if(defined('USE_VARIANTS'))
+				{
+					unlink($yml);
+				}
+
 				return false;
 			}
 		}
@@ -213,6 +257,41 @@ class Respimg extends \Imagick {
 	}
 
 	/**
+	 * @param $file
+	 * @param $width
+	 * @param $height
+	 * @param $output
+	 *
+	 * @return mixed
+	 * @throws \Gumlet\ImageResizeException
+	 */
+	public function resize ( $file, $width, $height, $output ) {
+		$ouput = null;
+		if(defined('USE_VARIANTS'))
+		{
+			$image = new ImageResize($file);
+			$image->quality_jpg = 100;
+
+			if ( $width && !$height ) {
+				$image->resizeToWidth($width);
+			};
+			if ( $height && !$width ) {
+				$image->resizeToHeight($height);
+			};
+			if ( $width && $height ) {
+				$image->resizeToBestFit($width, $height);
+			};
+
+			$image->save($output);
+
+			$mozjpegCommand = "cjpeg -quality 85 -outfile {$output} {$output}";
+			exec($mozjpegCommand);
+		}
+
+		return $output;
+	}
+
+	/**
 	 * Resizes the image using smart defaults for high quality and low file size.
 	 *
 	 * This function is basically equivalent to:
@@ -226,12 +305,61 @@ class Respimg extends \Imagick {
 	 * @param	integer	$columns		The number of columns in the output image. 0 = maintain aspect ratio based on $rows.
 	 * @param	integer	$rows			The number of rows in the output image. 0 = maintain aspect ratio based on $columns.
 	 * @param	bool	$optim			Whether you intend to perform optimization on the resulting image. Note that setting this to `true` doesn’t actually perform any optimization.
+     * @param	string	$filter			The filter to use when generating thumbnail image
+     * @param	bool	$bestfit		Treat $columns and $rows as a bounding box in which to fit the image.
+     * @param	bool	$crop			Whether you want to crop the image
 	 */
 
-	public function smartResize($columns, $rows, $optim = false) {
+	public function smartResize($columns, $rows, $optim = false, $filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false) {
 
 		$this->setOption('filter:support', '2.0');
-		$this->thumbnailImage($columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+
+		if(defined('USE_VARIANTS'))
+		{
+			$orig_w = $this->getImageWidth();
+			$orig_h = $this->getImageHeight();
+
+			if ($orig_w < $columns || $orig_h < $rows)
+			{
+				return false;
+			}
+
+			if ($columns !== 0 && $rows !== 0)
+			{
+				$new_w = min($columns, $orig_w);
+				$new_h = min($rows, $orig_h);
+				$size_ratio = max($new_w / $orig_w, $new_h / $orig_h);
+				$crop_w = round($new_w / $size_ratio);
+				$crop_h = round($new_h / $size_ratio);
+				$crop_x = floor(($orig_w - $crop_w) / 2);
+				$crop_y = floor(($orig_h - $crop_h) / 2);
+				$this->cropImage($crop_w, $crop_h, $crop_x, $crop_y);
+				$this->setImagePage($crop_w, $crop_h, 0, 0);
+				$columns = $new_w;
+				$rows = $new_h;
+			}
+		}
+
+		if(defined('USE_VARIANTS'))
+		{
+			if(defined('USE_VARIANTS_LANCZOS'))
+			{
+				$this->thumbnailImage($columns, $rows, $bestfit, false, \Imagick::FILTER_LANCZOS);
+			}
+			else
+			{
+				$this->thumbnailImage($columns, $rows, $bestfit, false, $filter);
+			}
+
+			if ($crop) {
+				$this->cropThumbnailImage($columns, $rows);
+			}
+		}
+		else
+		{
+			$this->thumbnailImage($columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+		}
+
 		if ($optim) {
 			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
 		} else {
