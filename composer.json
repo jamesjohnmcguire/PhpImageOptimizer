@@ -1,7 +1,7 @@
 {
-    "name": "nwtn/php-respimg",
+    "name": "digitalzenworks/php-image-optimizer",
     "description": "A responsive image workflow for optimizing and resizing your images",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "keywords": [
         "responsive images",
         "respimg",
@@ -11,23 +11,23 @@
         "imagick",
         "resize"
     ],
-    "homepage": "https://github.com/nwtn/php-respimg/",
+    "homepage": "https://github.com/jamesjohnmcguire/PhpImageOptimizer/",
     "license": "MIT",
     "authors": [
         {
-            "name": "David Newton",
-            "email": "david@davidnewton.ca"
+            "name": "James John McGuire",
+            "email": "jamesjohnmcguire@gmail.com"
         }
     ],
     "minimum-stability": "dev",
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/nwtn/php-respimg/"
+            "url": "https://github.com/jamesjohnmcguire/PhpImageOptimizer/"
         }
     ],
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "ext-imagick": "*"
     },
     "config": {
