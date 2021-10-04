@@ -1,10 +1,10 @@
+<?xml version="1.0"?>
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.0/phpunit.xsd"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 	backupGlobals="true"
 	backupStaticAttributes="false"
 	cacheResult="false"
-	cacheTokens="false"
 	colors="true"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
@@ -21,7 +21,8 @@
 	timeoutForLargeTests="60"
 	verbose="true"
 	>
+	<coverage/>
 	<php>
-		 <ini name="display_errors" value="true"/>
+	<ini name="display_errors" value="true"/>
 	</php>
 </phpunit>
