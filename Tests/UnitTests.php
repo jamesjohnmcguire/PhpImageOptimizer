@@ -36,5 +36,8 @@ final class UnitTests extends TestCase
 
 		$exists = file_exists($destination);
 		$this->assertTrue($exists);
+
+		// clean up
+		unlink($destination);
 	}
 }
