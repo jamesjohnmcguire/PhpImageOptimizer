@@ -16,6 +16,7 @@
 	stopOnIncomplete="false"
 	stopOnSkipped="false"
 	stopOnRisky="false"
+	testdox="true"
 	timeoutForSmallTests="1"
 	timeoutForMediumTests="10"
 	timeoutForLargeTests="60"
