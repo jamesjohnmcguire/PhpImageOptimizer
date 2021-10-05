@@ -11,7 +11,7 @@ require 'vendor/autoload.php';
 require_once 'SourceCode/Respimg.php';
 
 use PHPUnit\Framework\TestCase;
-use nwtn\Respimg as Respimg;
+use DigitalZenWorks\Respimg as Respimg;
 
 /**
  */

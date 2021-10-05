@@ -11,8 +11,7 @@
 
 // load the library
 require_once __DIR__ . '/../src/Respimg.php';
-use nwtn\Respimg;
-
+use DigitalZenWorks\Respimg;
 
 // define the types of raster files we’re allowing
 $exts = array(

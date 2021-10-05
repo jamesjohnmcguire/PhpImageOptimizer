@@ -3,12 +3,13 @@
  * php-respimg <https://github.com/nwtn/php-respimg>
  *
  * @author		David Newton <david@davidnewton.ca>
- * @copyright	2015 David Newton
- * @license		https://raw.githubusercontent.com/nwtn/php-respimg/master/LICENSE MIT
- * @version		1.0.1
+ * @author		James John McGuire <jamesjohnmcguire@gmail.com>
+ * @copyright	2021 James John McGuire
+ * @license     MIT https://opensource.org/licenses/MIT
+ * @version		1.1.1
  */
 
-namespace nwtn;
+namespace DigitalZenWorks;
 
 if(defined('USE_VARIANTS'))
 {
