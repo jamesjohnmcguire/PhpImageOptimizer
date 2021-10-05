@@ -11,22 +11,6 @@ if(defined('USE_VARIANTS'))
 	// use Gumlet\ImageResize;
 }
 
-if (!class_exists('Client') || !class_exists('ServiceContainer'))
-{
-	if (file_exists(__DIR__ . '/../vendor/autoload.php'))
-	{
-		require_once(__DIR__ . '/../vendor/autoload.php');
-	}
-	elseif (file_exists(__DIR__ . '/../../../autoload.php'))
-	{
-		require_once(__DIR__ . '/../../../autoload.php');
-	}
-	else
-	{
-		die('Couldn’t load required libraries.');
-	}
-}
-
 /**
  * An Imagick extension to provide better (higher quality, lower file size) image resizes.
  *
