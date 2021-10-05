@@ -1,51 +1,48 @@
 {
-    "name": "nwtn/php-respimg",
-    "description": "A responsive image workflow for optimizing and resizing your images",
-    "version": "1.0.1",
-    "keywords": [
-        "responsive images",
-        "respimg",
-        "responsive web design",
-        "rwd",
-        "imagemagick",
-        "imagick",
-        "resize"
-    ],
-    "homepage": "https://github.com/nwtn/php-respimg/",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "David Newton",
-            "email": "david@davidnewton.ca"
-        }
-    ],
-    "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/nwtn/php-respimg/"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.0",
-        "ext-imagick": "*",
-        "jonnyw/php-phantomjs": "3.1.5"
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ],
-        "post-update-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ]
-    },
-    "config": {
-        "bin-dir": "bin"
-    },
-    "autoload": {
-        "psr-4": {
-            "nwtn\\": "src/",
-            "": "src/"
-        }
-    }
+	"description": "A responsive image workflow for optimizing and resizing your images",
+	"homepage": "https://github.com/jamesjohnmcguire/PhpImageOptimizer/",
+	"license": "MIT",
+	"name": "digitalzenworks/php-image-optimizer",
+	"minimum-stability": "dev",
+	"type": "library",
+	"version": "1.1.1",
+	"authors": [
+		{
+			"name": "James John McGuire",
+			"email": "jamesjohnmcguire@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"digitalzenworks\\PhpImageOptimizer\\": "SourceCode/"
+		}
+	},
+	"keywords": [
+		"responsive images",
+		"respimg",
+		"responsive web design",
+		"rwd",
+		"imagemagick",
+		"imagick",
+		"resize"
+	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/jamesjohnmcguire/PhpImageOptimizer/"
+		}
+	],
+	"require": {
+		"php": ">=5.4.0",
+		"ext-imagick": "*"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "*",
+		"php-parallel-lint/php-parallel-lint": "^1.2.0",
+		"phpcompatibility/php-compatibility": "*",
+		"phpcsstandards/phpcsdevtools": "^1.0",
+		"phpstan/phpstan": "^0.12.87",
+		"phpunit/phpunit": "^9.1",
+		"squizlabs/php_codesniffer": "*"
+	}
 }
