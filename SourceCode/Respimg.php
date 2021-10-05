@@ -289,10 +289,9 @@ class Respimg extends \Imagick
 	 * 		in which to fit the image.
      * @param	bool	$crop		Whether you want to crop the image
 	 */
-
 	public function smartResize($columns, $rows, $optim = false,
-		$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
-	{
+	$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
+{
 		$this->setOption('filter:support', '2.0');
 
 		if(defined('USE_VARIANTS'))
