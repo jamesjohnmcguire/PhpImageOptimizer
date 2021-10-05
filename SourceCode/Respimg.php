@@ -320,7 +320,30 @@ class Respimg extends \Imagick
 			}
 		}
 
-		$this->thumbnailImage($columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+		if(defined('USE_VARIANTS'))
+		{
+			if(defined('USE_VARIANTS_LANCZOS'))
+			{
+				$this->thumbnailImage(
+					$columns, $rows, $bestfit, false, \Imagick::FILTER_LANCZOS);
+			}
+			else
+			{
+				$this->thumbnailImage(
+					$columns, $rows, $bestfit, false, $filter);
+			}
+
+			if ($crop)
+			{
+				$this->cropThumbnailImage($columns, $rows);
+			}
+		}
+		else
+		{
+			$this->thumbnailImage(
+				$columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+		}
+
 		if ($optim) {
 			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
 		} else {
