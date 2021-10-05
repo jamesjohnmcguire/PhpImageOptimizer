@@ -41,26 +41,38 @@ final class UnitTests extends TestCase
 		unlink($destination);
 	}
 
+	public function testImageCopyCheckSizes()
+	{
+		$source = "Tests/assets/raster/TesterImage6.jpg";
+		$destination = "Tests/assets/raster/TesterImage4temp.jpg";
+
+		$image = new Respimg($source);
+
+		list($width, $height) = getimagesize($source);
+		$image->smartResize($width, $height, false);
+
+		$result = $image->writeImage($destination);
+		$this->assertTrue($result);
+
+		$exists = file_exists($destination);
+		$this->assertTrue($exists);
+
+		$size = filesize($source);
+		echo "size of source $source is $size\r\n";
+
+		$size = filesize($destination);
+		echo "size of destination $destination is $size\r\n";
+
+		// clean up
+		unlink($destination);
+	}
+
 	public function testSimpleSmartResize()
 	{
 		$source = "Tests/assets/raster/TesterImage6.jpg";
 		$temp = "Tests/assets/raster/TesterImage4temp.jpg";
 		$destination = "Tests/assets/raster/TesterImage4b_1280.jpg";
 		$image = new Respimg($source);
-
-		$size = filesize($source);
-		echo "size of $source is $size\r\n";
-		list($width, $height) = getimagesize($source);
-
-		echo "width of $source is $width\r\n";
-		echo "width of $height is $height\r\n";
-		$image->smartResize($width, $height, false);
-		$result = $image->writeImage($temp);
-		$this->assertTrue($result);
-		$size = filesize($temp);
-		echo "size of $temp is $size\r\n";
-
-		$image = new Respimg($temp);
 
 		$width = 1280;
 		$image->smartResize($width, 0, false);
@@ -76,6 +88,6 @@ final class UnitTests extends TestCase
 		$this->assertEquals($width, 1280);
 
 		// clean up
-		// unlink($destination);
+		unlink($destination);
 	}
 }
