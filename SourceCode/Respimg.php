@@ -298,7 +298,8 @@ class Respimg extends \Imagick
 		} else {
 			$this->unsharpMaskImage(0.25, 0.25, 8, 0.065);
 		}
-//			$this->posterizeImage(136, false);
+
+		$this->posterizeImage(136, false);
 		$this->setImageCompressionQuality(82);
 		$this->setOption('jpeg:fancy-upsampling', 'off');
 		$this->setOption('png:compression-filter', '5');
