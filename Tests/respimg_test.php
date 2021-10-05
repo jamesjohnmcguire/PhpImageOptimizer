@@ -10,8 +10,8 @@
  */
 
 // load the library
-require_once __DIR__ . '/../src/Respimg.php';
-use DigitalZenWorks\Respimg;
+require_once __DIR__ . '/../SourceCode/ImageOptimizer.php';
+use DigitalZenWorks\ImageOptimizer;
 
 // define the types of raster files we’re allowing
 $exts = array(
@@ -38,7 +38,7 @@ if ($dir = opendir($path_raster_i)) {
 		if (in_array($ext, $exts)) {
 			foreach ($widths as $w) {
 				echo 'Resizing ' . $file . ' to ' . $w . '…';
-				$image = new Respimg($path_raster_i . '/' . $file);
+				$image = new ImageOptimizer($path_raster_i . '/' . $file);
 				$image->smartResize($w, 0, true);
 				$image->writeImage($path_raster_o . '/' . $base . '-w' . $w . '.' . $ext);
 				echo "OK\n";
@@ -63,7 +63,7 @@ if ($dir = opendir($path_svg_i)) {
 
 // optimize outputs
 echo 'Optimizing…';
-if (Respimg::optimize( __DIR__ . '/generated', 3, 1, 1, 1)) {
+if (ImageOptimizer::optimize( __DIR__ . '/generated', 3, 1, 1, 1)) {
 	echo "OK\n";
 } else {
 	echo "failed\n";

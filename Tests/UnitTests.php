@@ -8,10 +8,10 @@ declare(strict_types=1);
 namespace DigitalZenWorks\PhpImageOptimizer\UnitTests;
 
 require 'vendor/autoload.php';
-require_once 'SourceCode/Respimg.php';
+require_once 'SourceCode/ImageOptimizer.php';
 
 use PHPUnit\Framework\TestCase;
-use DigitalZenWorks\Respimg as Respimg;
+use DigitalZenWorks\ImageOptimizer as ImageOptimizer;
 
 /**
  */
@@ -29,7 +29,7 @@ final class UnitTests extends TestCase
 	{
 		$source = "Tests/assets/raster/1A-1.jpg";
 		$destination = "Tests/assets/raster/2.jpg";
-		$image = new Respimg($source);
+		$image = new ImageOptimizer($source);
 
 		$result = $image->writeImage($destination);
 		$this->assertTrue($result);
@@ -46,7 +46,7 @@ final class UnitTests extends TestCase
 		$source = "Tests/assets/raster/TesterImage6.jpg";
 		$destination = "Tests/assets/raster/TesterImage4temp.jpg";
 
-		$image = new Respimg($source);
+		$image = new ImageOptimizer($source);
 
 		list($width, $height) = getimagesize($source);
 		$image->smartResize($width, $height, false);
@@ -72,7 +72,7 @@ final class UnitTests extends TestCase
 		$source = "Tests/assets/raster/TesterImage6.jpg";
 		$temp = "Tests/assets/raster/TesterImage4temp.jpg";
 		$destination = "Tests/assets/raster/TesterImage4b_1280.jpg";
-		$image = new Respimg($source);
+		$image = new ImageOptimizer($source);
 
 		$width = 1280;
 		$image->smartResize($width, 0, false);
