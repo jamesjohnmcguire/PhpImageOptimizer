@@ -1,22 +1,13 @@
 <?php
-
-	/**
-	 * An Imagick extension to provide better (higher quality, lower file size) image resizes.
-	 *
-	 * php-respimg
-	 * <https://github.com/nwtn/php-respimg>
-	 *
-	 * This class extends Imagick (<http://php.net/manual/en/book.imagick.php>) based on
-	 * research into optimal image resizing techniques (<https://github.com/nwtn/image-resize-tests>).
-	 *
-	 * Using these methods with their default settings should provide image resizing that is
-	 * visually indistinguishable from Photoshop’s “Save for Web…”, but at lower file sizes.
-	 *
-	 * @author		David Newton <david@davidnewton.ca>
-	 * @copyright	2015 David Newton
-	 * @license		https://raw.githubusercontent.com/nwtn/php-respimg/master/LICENSE MIT
-	 * @version		1.0.1
-	 */
+/**
+ * php-respimg <https://github.com/nwtn/php-respimg>
+ *
+ * @author		David Newton <david@davidnewton.ca>
+ * @author		James John McGuire <jamesjohnmcguire@gmail.com>
+ * @copyright	2021 James John McGuire
+ * @license     MIT https://opensource.org/licenses/MIT
+ * @version		1.1.1
+ */
 
 	// load the library
 	require_once __DIR__ . '/../src/Respimg.php';
