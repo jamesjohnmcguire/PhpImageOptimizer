@@ -1,48 +1,31 @@
 <?php
-
 /**
  * php-respimg <https://github.com/nwtn/php-respimg>
+ *
+ * @author		David Newton <david@davidnewton.ca>
+ * @author		James John McGuire <jamesjohnmcguire@gmail.com>
+ * @copyright	2021 James John McGuire
+ * @license     MIT https://opensource.org/licenses/MIT
+ * @version		1.2.1
  */
 
-namespace nwtn;
+namespace DigitalZenWorks;
 
 if(defined('USE_VARIANTS'))
 {
 	// use Gumlet\ImageResize;
 }
 
-if (!class_exists('Client') || !class_exists('ServiceContainer'))
-{
-	if (file_exists(__DIR__ . '/../vendor/autoload.php'))
-	{
-		require_once(__DIR__ . '/../vendor/autoload.php');
-	}
-	elseif (file_exists(__DIR__ . '/../../../autoload.php'))
-	{
-		require_once(__DIR__ . '/../../../autoload.php');
-	}
-	else
-	{
-		die('Couldn’t load required libraries.');
-	}
-}
-
 /**
- * An Imagick extension to provide better (higher quality, lower file size) image resizes.
+ * ImageOptimizer - An Imagick extension to provide better (higher quality, lower file size) image resizes.
  *
  * This class extends Imagick (<http://php.net/manual/en/book.imagick.php>) based on
  * research into optimal image resizing techniques (<https://github.com/nwtn/image-resize-tests>).
  *
  * Using these methods with their default settings should provide image resizing that is
  * visually indistinguishable from Photoshop’s “Save for Web…”, but at lower file sizes.
- *
- * @author		David Newton <david@davidnewton.ca>
- * @copyright	2015 David Newton
- * @license		https://raw.githubusercontent.com/nwtn/php-respimg/master/LICENSE MIT
- * @version		1.0.1
  */
-
-class Respimg extends \Imagick
+class ImageOptimizer extends \Imagick
 {
 	/**
 	 * Optimizes the image without reducing quality.
@@ -289,10 +272,9 @@ class Respimg extends \Imagick
 	 * 		in which to fit the image.
      * @param	bool	$crop		Whether you want to crop the image
 	 */
-
 	public function smartResize($columns, $rows, $optim = false,
-		$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
-	{
+	$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
+{
 		$this->setOption('filter:support', '2.0');
 
 		if(defined('USE_VARIANTS'))
