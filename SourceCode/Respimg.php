@@ -293,32 +293,6 @@ class Respimg extends \Imagick
 	$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
 {
 		$this->setOption('filter:support', '2.0');
-		$this->thumbnailImage($columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
-		if ($optim) {
-			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
-		} else {
-			$this->unsharpMaskImage(0.25, 0.25, 8, 0.065);
-		}
-
-		$this->posterizeImage(136, false);
-		$this->setImageCompressionQuality(82);
-		$this->setOption('jpeg:fancy-upsampling', 'off');
-		$this->setOption('png:compression-filter', '5');
-		$this->setOption('png:compression-level', '9');
-		$this->setOption('png:compression-strategy', '1');
-		$this->setOption('png:exclude-chunk', 'all');
-		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
-		$this->setColorspace(\Imagick::COLORSPACE_SRGB);
-		if (!$optim) {
-			$this->stripImage();
-		}
-
-	}
-
-	public function smartResize2($columns, $rows, $optim = false,
-		$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
-	{
-		$this->setOption('filter:support', '2.0');
 
 		if(defined('USE_VARIANTS'))
 		{
@@ -346,6 +320,31 @@ class Respimg extends \Imagick
 			}
 		}
 
+		$this->thumbnailImage($columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+		if ($optim) {
+			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
+		} else {
+			$this->unsharpMaskImage(0.25, 0.25, 8, 0.065);
+		}
+
+		$this->posterizeImage(136, false);
+		$this->setImageCompressionQuality(82);
+		$this->setOption('jpeg:fancy-upsampling', 'off');
+		$this->setOption('png:compression-filter', '5');
+		$this->setOption('png:compression-level', '9');
+		$this->setOption('png:compression-strategy', '1');
+		$this->setOption('png:exclude-chunk', 'all');
+		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
+		$this->setColorspace(\Imagick::COLORSPACE_SRGB);
+		if (!$optim) {
+			$this->stripImage();
+		}
+
+	}
+
+	public function smartResize2($columns, $rows, $optim = false,
+		$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
+	{
 		if(defined('USE_VARIANTS'))
 		{
 			if(defined('USE_VARIANTS_LANCZOS'))
