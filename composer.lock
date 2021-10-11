@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40d21a4f4477bdfc2e808a38159312c0",
+    "content-hash": "436de7ed942264f5558dd0b87168ea3b",
     "packages": [],
     "packages-dev": [
         {
@@ -700,12 +700,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "0f36fa483bc30d0032f700a38b40141cfa383910"
+                "reference": "0005eb9eaecc2a3a00b8ee34c06643a316ebb228"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/0f36fa483bc30d0032f700a38b40141cfa383910",
-                "reference": "0f36fa483bc30d0032f700a38b40141cfa383910",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/0005eb9eaecc2a3a00b8ee34c06643a316ebb228",
+                "reference": "0005eb9eaecc2a3a00b8ee34c06643a316ebb228",
                 "shasum": ""
             },
             "require": {
@@ -750,7 +750,7 @@
                 "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
                 "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/master"
             },
-            "time": "2021-09-27T19:30:08+00:00"
+            "time": "2021-10-05T20:58:53+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -2327,12 +2327,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "f619f0b91dd34241ae6ce08902236c2d0ee740e6"
+                "reference": "f268ca40d54617c6e06757f83f699775c9b3ff2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f619f0b91dd34241ae6ce08902236c2d0ee740e6",
-                "reference": "f619f0b91dd34241ae6ce08902236c2d0ee740e6",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f268ca40d54617c6e06757f83f699775c9b3ff2e",
+                "reference": "f268ca40d54617c6e06757f83f699775c9b3ff2e",
                 "shasum": ""
             },
             "require": {
@@ -2376,7 +2376,7 @@
                 "source": "https://github.com/squizlabs/PHP_CodeSniffer",
                 "wiki": "https://github.com/squizlabs/PHP_CodeSniffer/wiki"
             },
-            "time": "2021-09-29T22:56:28+00:00"
+            "time": "2021-10-11T04:00:11+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
