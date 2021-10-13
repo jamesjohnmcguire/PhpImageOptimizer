@@ -45,6 +45,7 @@
 		<exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag"/>
 		<exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
 		<exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
+		<exclude name="PEAR.Commenting.FileComment.InvalidVersion"/>
 		<exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
 		<exclude name="PEAR.Commenting.FileComment.MissingLinkTag"/>
 		<exclude name="PEAR.Commenting.FileComment.MissingVersion"/>
@@ -52,6 +53,9 @@
 		<exclude name="PEAR.ControlStructures.MultiLineCondition.CloseBracketNewLine"/>
 		<exclude name="PEAR.ControlStructures.MultiLineCondition.NewlineBeforeOpenBrace"/>
 		<exclude name="PEAR.ControlStructures.MultiLineCondition.StartWithBoolean"/>
+		<exclude name="PEAR.Formatting.MultiLineAssignment.EqualSignLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
 		<exclude name="PEAR.Functions.FunctionDeclaration.CloseBracketLine"/>
 		<exclude name="PEAR.Functions.FunctionDeclaration.NewlineBeforeOpenBrace"/>
 		<exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
@@ -60,6 +64,8 @@
 	<rule ref="PSR1" />
 	<rule ref="PSR2">
 		<exclude name="Generic.Files.LineEndings"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.Indent"/>
 	</rule>
 
 	<rule ref="PSR12">
@@ -70,12 +76,17 @@
 	</rule>
 
 	<rule ref="Squiz">
+		<exclude name="Generic.Strings.UnnecessaryStringConcat.Found"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
 		<exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed"/>
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent.NonIndentTabsUsed"/>
+		<exclude name="Squiz.Arrays.ArrayDeclaration.NoCommaAfterLast"/>
 		<exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
+		<exclude name="Squiz.Commenting.BlockComment.NoEmptyLineAfter"/>
 		<exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
 		<exclude name="Squiz.Commenting.FileComment.AuthorTagOrder"/>
 		<exclude name="Squiz.Commenting.FileComment.CopyrightTagOrder"/>
+		<exclude name="Squiz.Commenting.FileComment.DuplicateAuthorTag"/>
 		<exclude name="Squiz.Commenting.FileComment.IncorrectAuthor"/>
 		<exclude name="Squiz.Commenting.FileComment.IncorrectCopyright"/>
 		<exclude name="Squiz.Commenting.FileComment.MissingSubpackageTag"/>
@@ -96,6 +107,7 @@
 		<exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
 		<exclude name="Squiz.WhiteSpace.FunctionSpacing.BeforeFirst"/>
 		<exclude name="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect"/>
+		<exclude name="Squiz.WhiteSpace.OperatorSpacing.SpacingAfter"/>
 	</rule>
 
 </ruleset>
