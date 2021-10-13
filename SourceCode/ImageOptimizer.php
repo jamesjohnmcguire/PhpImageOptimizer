@@ -24,198 +24,7 @@ namespace DigitalZenWorks;
 class ImageOptimizer extends \Imagick
 {
 	/**
-	 * Optimizes the image without reducing quality.
-	 *
-	 * This function calls up to four external programs, which must be installed and available in the $PATH:
-	 *
-	 * * SVGO
-	 * * image_optim
-	 * * picopt
-	 * * ImageOptim
-	 *
-	 * Note that these are executed using PHP’s `exec` command, so there may be security implications.
-	 *
-	 * @param string  $path            The path to the file or directory that should be optimized.
-	 * @param integer $svgo            The number of times to optimize using SVGO.
-	 * @param integer $imageOptimizer1 The number of times to optimize using image_optim.
-	 * @param integer $picopt          The number of times to optimize using picopt.
-	 * @param integer $imageOptim      The number of times to optimize using ImageOptim.
-	 *
-	 * @return string $output
-	 */
-	public static function optimize(
-		string $path,
-		int $svgo = 0,
-		int $imageOptimizer1 = 0,
-		int $picopt = 0,
-		int $imageOptim = 0) : string
-	{
-		$output = false;
-
-		// Make sure the path is real.
-		$exists = file_exists($path);
-
-		if ($exists === true)
-		{
-			$isDir = is_dir($path);
-
-			if ($isDir === false)
-			{
-				$position = strrpos($path, '/');
-				$baseName = substr($path, 0, $position);
-				$dir = escapeshellarg($baseName);
-
-				$position = strrpos($path, '/');
-				$position++;
-				$baseName = substr($path, $position);
-				$file = escapeshellarg($baseName);
-			}
-
-			$path = escapeshellarg($path);
-
-			// Make sure we got some ints up in here.
-			$svgo = (int) $svgo;
-			$imageOptimizer1 = (int) $imageOptimizer1;
-			$picopt = (int) $picopt;
-			$imageOptim = (int) $imageOptim;
-
-			// Create some vars to store output.
-			$output = [];
-			$returnVar = 0;
-
-			// If we’re using imageOptimizer1, need to create the YAML config file.
-			if ($imageOptimizer1 > 0)
-			{
-				$contents = "verbose: true\njpegtran:\n  progressive: false\n" .
-					"optipng:\n  level: 7\n  interlace: false\npngcrush:\n  " .
-					"fix: true\n  brute: true\npngquant:\n  speed: 11\n";
-				$yml = tempnam('/tmp', 'yml');
-				file_put_contents($yml, $content);
-			}
-
-			// Do the svgo optimizations.
-			for ($i = 0; $i < $svgo; $i++)
-			{
-				$additionalArguments =
-					$path . ' --disable removeUnknownsAndDefaults';
-
-				if ($isDir === true)
-				{
-					$rawCommand = 'svgo -f ' . $additionalArguments;
-				}
-				else
-				{
-					$rawCommand = 'svgo -i ' . $additionalArguments;
-				}
-				$command = escapeshellcmd($rawCommand);
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					return false;
-				}
-			}
-
-			if(defined('USE_VARIANTS') === true)
-			{
-				$disableSVGO = '';
-
-				if ($svgo < 1)
-				{
-					$disableSVGO = '--no-svgo';
-				}
-			}
-
-			// Do the imageOptimizer1 optimizations.
-			for ($i = 0; $i < $imageOptimizer1; $i++)
-			{
-				$baseCommand =
-					'image_optim -r ' . $path . ' --config-paths ' . $yml;
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					$baseCommand .= ' ' . $disableSVGO;
-				}
-
-				$command = escapeshellcmd($baseCommand);
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
-
-			// Do the picopt optimizations.
-			for ($i = 0; $i < $picopt; $i++)
-			{
-				$command = escapeshellcmd('picopt -r ' . $path);
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
-
-			/*
-			 * Do the ImageOptim optimizations
-			 * ImageOptim can’t handle the path with single quotes,
-			 * so we have to strip them
-			 * ImageOptim-CLI has an issue where it only works with a directory,
-			 * not a single file
-			 */
-			for ($i = 0; $i < $imageOptim; $i++)
-			{
-				if ($isDir === true)
-				{
-					$baseCommand = 'imageoptim -d ' . $path . ' -q';
-				}
-				else
-				{
-					$baseCommand = 'find ' . $dir . ' -name ' . $file;
-				}
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					if ($isDir === true)
-					{
-						$baseCommand .= $disableSVGO;
-					}
-					else
-					{
-						$baseCommand = 'find ' . $dir . ' -name ' . $file;
-						$command .= ' | imageoptim ' . $disableSVGO;
-					}
-				}
-
-				$command = escapeshellcmd($baseCommand);
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					if ($isDir === false)
-					{
-						$command .= $disableSVGO;
-					}
-				}
-
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
-		}
-
-		return $output;
-	}
-
-	/**
-	 * Resize method.
+	 * alternateResize method.
 	 *
 	 * Variant method from forked repository avonis/respimg.
 	 * Untested! Unverified!  Requires Gumlet\ImageResize.
@@ -228,7 +37,7 @@ class ImageOptimizer extends \Imagick
 	 * @return mixed
 	 * @throws \Gumlet\ImageResizeException Something went wrong.
 	 */
-	public function resize(
+	public function alternateResize(
 		string $file,
 		int $width,
 		int $height,
@@ -262,142 +71,6 @@ class ImageOptimizer extends \Imagick
 		}
 
 		return $destination;
-	}
-
-	/**
-	 * Resizes the image using smart defaults for high quality and
-	 * low file size.
-	 *
-	 * This function is basically equivalent to:
-	 *
-	 * $optim == true: `mogrify -path OUTPUT_PATH -filter Triangle \
-	 *  -define filter:support=2.0 -thumbnail OUTPUT_WIDTH \
-	 *  -unsharp 0.25x0.08+8.3+0.045 -dither None -posterize 136 -quality 82 \
-	 *  -define jpeg:fancy-upsampling=off -define png:compression-filter=5 \
-	 *  -define png:compression-level=9 -define png:compression-strategy=1 \
-	 *  -define png:exclude-chunk=all -interlace none \
-	 *  -colorspace sRGB INPUT_PATH`
-	 *
-	 * $optim == false: `mogrify -path OUTPUT_PATH -filter Triangle \
-	 *  -define filter:support=2.0 -thumbnail OUTPUT_WIDTH \
-	 *  -unsharp 0.25x0.25+8+0.065 -dither None -posterize 136 -quality 82 \
-	 *  -define jpeg:fancy-upsampling=off -define png:compression-filter=5 \
-	 *  -define png:compression-level=9 -define png:compression-strategy=1 \
-	 *  -define png:exclude-chunk=all -interlace none -colorspace sRGB \
-	 *  -strip INPUT_PATH`
-	 *
-	 * @param integer $columns The number of columns in the output image.
-	 *                         0 = maintain aspect ratio based on $rows.
-	 * @param integer $rows    The number of rows in the output image.
-	 *                         0 = maintain aspect ratio based on $columns.
-	 * @param boolean $optim   Whether you intend to perform optimization
-	 *                         on the resulting image. Note that setting this to
-	 *                         `true` doesn’t actually perform any optimization.
-     * @param integer $filter  The filter to use when generating
-	 *                         thumbnail image.
-     * @param boolean $bestfit Treat $columns and $rows as a bounding box
-	 *                         in which to fit the image.
-     * @param boolean $crop    Whether you want to crop the image.
-	 *
-	 * @return void
-	 */
-	public function smartResize(
-		int $columns,
-		int $rows,
-		bool $optim = false,
-		int $filter = \Imagick::FILTER_TRIANGLE,
-		bool $bestfit = false,
-		bool $crop = false)
-	{
-		$this->setOption('filter:support', '2.0');
-
-		if(defined('USE_VARIANTS') === true)
-		{
-			$originalWidth = $this->getImageWidth();
-			$originalHeight = $this->getImageHeight();
-
-			if ($originalWidth > $columns && $originalHeight > $rows)
-			{
-				if ($columns !== 0 && $rows !== 0)
-				{
-					$newWidth = min($columns, $originalWidth);
-					$newHeight = min($rows, $originalHeight);
-
-					$temporaryWidth = ($newWidth / $originalWidth);
-					$temporaryHeight = ($newHeight / $originalHeight);
-					$sizeRatio = max($temporaryWidth, $temporaryHeight);
-
-					$cropWidth = round($newWidth / $sizeRatio);
-					$cropHeight = round($newHeight / $sizeRatio);
-					$cropX = floor(($originalWidth - $cropWidth) / 2);
-					$cropY = floor(($originalHeight - $cropHeight) / 2);
-					$this->cropImage($cropWidth, $cropHeight, $cropX, $cropY);
-					$this->setImagePage($cropWidth, $cropHeight, 0, 0);
-					$columns = $newWidth;
-					$rows = $newHeight;
-				}
-			}
-		}
-
-		if(defined('USE_VARIANTS') === true)
-		{
-			if(defined('USE_VARIANTS_LANCZOS') === true)
-			{
-				$this->optimalImage(
-					$columns,
-					$rows,
-					$bestfit,
-					false,
-					\Imagick::FILTER_LANCZOS);
-			}
-			else
-			{
-				$this->optimalImage(
-					$columns,
-					$rows,
-					$bestfit,
-					false,
-					$filter);
-			}
-
-			if ($crop === true)
-			{
-				$this->cropThumbnailImage($columns, $rows);
-			}
-		}
-		else
-		{
-			$this->optimalImage(
-				$columns,
-				$rows,
-				false,
-				false,
-				\Imagick::FILTER_TRIANGLE);
-		}
-
-		if ($optim === true)
-		{
-			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
-		}
-		else
-		{
-			$this->unsharpMaskImage(0.25, 0.25, 8, 0.065);
-		}
-
-		$this->posterizeImage(136, false);
-		$this->setImageCompressionQuality(82);
-		$this->setOption('jpeg:fancy-upsampling', 'off');
-		$this->setOption('png:compression-filter', '5');
-		$this->setOption('png:compression-level', '9');
-		$this->setOption('png:compression-strategy', '1');
-		$this->setOption('png:exclude-chunk', 'all');
-		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
-		$this->setColorspace(\Imagick::COLORSPACE_SRGB);
-
-		if ($optim === false)
-		{
-			$this->stripImage();
-		}
 	}
 
 	/**
@@ -632,5 +305,332 @@ class ImageOptimizer extends \Imagick
 		}
 
 		return true;
+	}
+
+	/**
+	 * Optimizes the image without reducing quality.
+	 *
+	 * This function calls up to four external programs, which must be installed and available in the $PATH:
+	 *
+	 * * SVGO
+	 * * image_optim
+	 * * picopt
+	 * * ImageOptim
+	 *
+	 * Note that these are executed using PHP’s `exec` command, so there may be security implications.
+	 *
+	 * @param string  $path            The path to the file or directory that should be optimized.
+	 * @param integer $svgo            The number of times to optimize using SVGO.
+	 * @param integer $imageOptimizer1 The number of times to optimize using image_optim.
+	 * @param integer $picopt          The number of times to optimize using picopt.
+	 * @param integer $imageOptim      The number of times to optimize using ImageOptim.
+	 *
+	 * @return string $output
+	 */
+	public static function optimize(
+		string $path,
+		int $svgo = 0,
+		int $imageOptimizer1 = 0,
+		int $picopt = 0,
+		int $imageOptim = 0) : string
+	{
+		$output = false;
+
+		// Make sure the path is real.
+		$exists = file_exists($path);
+
+		if ($exists === true)
+		{
+			$isDir = is_dir($path);
+
+			if ($isDir === false)
+			{
+				$position = strrpos($path, '/');
+				$baseName = substr($path, 0, $position);
+				$dir = escapeshellarg($baseName);
+
+				$position = strrpos($path, '/');
+				$position++;
+				$baseName = substr($path, $position);
+				$file = escapeshellarg($baseName);
+			}
+
+			$path = escapeshellarg($path);
+
+			// Make sure we got some ints up in here.
+			$svgo = (int) $svgo;
+			$imageOptimizer1 = (int) $imageOptimizer1;
+			$picopt = (int) $picopt;
+			$imageOptim = (int) $imageOptim;
+
+			// Create some vars to store output.
+			$output = [];
+			$returnVar = 0;
+
+			// If we’re using imageOptimizer1, need to create the YAML config file.
+			if ($imageOptimizer1 > 0)
+			{
+				$contents = "verbose: true\njpegtran:\n  progressive: false\n" .
+					"optipng:\n  level: 7\n  interlace: false\npngcrush:\n  " .
+					"fix: true\n  brute: true\npngquant:\n  speed: 11\n";
+				$yml = tempnam('/tmp', 'yml');
+				file_put_contents($yml, $content);
+			}
+
+			// Do the svgo optimizations.
+			for ($i = 0; $i < $svgo; $i++)
+			{
+				$additionalArguments =
+					$path . ' --disable removeUnknownsAndDefaults';
+
+				if ($isDir === true)
+				{
+					$rawCommand = 'svgo -f ' . $additionalArguments;
+				}
+				else
+				{
+					$rawCommand = 'svgo -i ' . $additionalArguments;
+				}
+				$command = escapeshellcmd($rawCommand);
+				exec($command, $output, $returnVar);
+
+				if ($returnVar !== 0)
+				{
+					return false;
+				}
+			}
+
+			if(defined('USE_VARIANTS') === true)
+			{
+				$disableSVGO = '';
+
+				if ($svgo < 1)
+				{
+					$disableSVGO = '--no-svgo';
+				}
+			}
+
+			// Do the imageOptimizer1 optimizations.
+			for ($i = 0; $i < $imageOptimizer1; $i++)
+			{
+				$baseCommand =
+					'image_optim -r ' . $path . ' --config-paths ' . $yml;
+
+				if(defined('USE_VARIANTS') === true)
+				{
+					$baseCommand .= ' ' . $disableSVGO;
+				}
+
+				$command = escapeshellcmd($baseCommand);
+				exec($command, $output, $returnVar);
+
+				if ($returnVar !== 0)
+				{
+					unlink($yml);
+					return false;
+				}
+			}
+
+			// Do the picopt optimizations.
+			for ($i = 0; $i < $picopt; $i++)
+			{
+				$command = escapeshellcmd('picopt -r ' . $path);
+				exec($command, $output, $returnVar);
+
+				if ($returnVar !== 0)
+				{
+					unlink($yml);
+					return false;
+				}
+			}
+
+			/*
+			 * Do the ImageOptim optimizations
+			 * ImageOptim can’t handle the path with single quotes,
+			 * so we have to strip them
+			 * ImageOptim-CLI has an issue where it only works with a directory,
+			 * not a single file
+			 */
+			for ($i = 0; $i < $imageOptim; $i++)
+			{
+				if ($isDir === true)
+				{
+					$baseCommand = 'imageoptim -d ' . $path . ' -q';
+				}
+				else
+				{
+					$baseCommand = 'find ' . $dir . ' -name ' . $file;
+				}
+
+				if(defined('USE_VARIANTS') === true)
+				{
+					if ($isDir === true)
+					{
+						$baseCommand .= $disableSVGO;
+					}
+					else
+					{
+						$baseCommand = 'find ' . $dir . ' -name ' . $file;
+						$command .= ' | imageoptim ' . $disableSVGO;
+					}
+				}
+
+				$command = escapeshellcmd($baseCommand);
+
+				if(defined('USE_VARIANTS') === true)
+				{
+					if ($isDir === false)
+					{
+						$command .= $disableSVGO;
+					}
+				}
+
+				exec($command, $output, $returnVar);
+
+				if ($returnVar !== 0)
+				{
+					unlink($yml);
+					return false;
+				}
+			}
+		}
+
+		return $output;
+	}
+
+	/**
+	 * Resizes the image using smart defaults for high quality and
+	 * low file size.
+	 *
+	 * This function is basically equivalent to:
+	 *
+	 * $optim == true: `mogrify -path OUTPUT_PATH -filter Triangle \
+	 *  -define filter:support=2.0 -thumbnail OUTPUT_WIDTH \
+	 *  -unsharp 0.25x0.08+8.3+0.045 -dither None -posterize 136 -quality 82 \
+	 *  -define jpeg:fancy-upsampling=off -define png:compression-filter=5 \
+	 *  -define png:compression-level=9 -define png:compression-strategy=1 \
+	 *  -define png:exclude-chunk=all -interlace none \
+	 *  -colorspace sRGB INPUT_PATH`
+	 *
+	 * $optim == false: `mogrify -path OUTPUT_PATH -filter Triangle \
+	 *  -define filter:support=2.0 -thumbnail OUTPUT_WIDTH \
+	 *  -unsharp 0.25x0.25+8+0.065 -dither None -posterize 136 -quality 82 \
+	 *  -define jpeg:fancy-upsampling=off -define png:compression-filter=5 \
+	 *  -define png:compression-level=9 -define png:compression-strategy=1 \
+	 *  -define png:exclude-chunk=all -interlace none -colorspace sRGB \
+	 *  -strip INPUT_PATH`
+	 *
+	 * @param integer $columns The number of columns in the output image.
+	 *                         0 = maintain aspect ratio based on $rows.
+	 * @param integer $rows    The number of rows in the output image.
+	 *                         0 = maintain aspect ratio based on $columns.
+	 * @param boolean $optim   Whether you intend to perform optimization
+	 *                         on the resulting image. Note that setting this to
+	 *                         `true` doesn’t actually perform any optimization.
+     * @param integer $filter  The filter to use when generating
+	 *                         thumbnail image.
+     * @param boolean $bestfit Treat $columns and $rows as a bounding box
+	 *                         in which to fit the image.
+     * @param boolean $crop    Whether you want to crop the image.
+	 *
+	 * @return void
+	 */
+	public function smartResize(
+		int $columns,
+		int $rows,
+		bool $optim = false,
+		int $filter = \Imagick::FILTER_TRIANGLE,
+		bool $bestfit = false,
+		bool $crop = false)
+	{
+		$this->setOption('filter:support', '2.0');
+
+		if(defined('USE_VARIANTS') === true)
+		{
+			$originalWidth = $this->getImageWidth();
+			$originalHeight = $this->getImageHeight();
+
+			if ($originalWidth > $columns && $originalHeight > $rows)
+			{
+				if ($columns !== 0 && $rows !== 0)
+				{
+					$newWidth = min($columns, $originalWidth);
+					$newHeight = min($rows, $originalHeight);
+
+					$temporaryWidth = ($newWidth / $originalWidth);
+					$temporaryHeight = ($newHeight / $originalHeight);
+					$sizeRatio = max($temporaryWidth, $temporaryHeight);
+
+					$cropWidth = round($newWidth / $sizeRatio);
+					$cropHeight = round($newHeight / $sizeRatio);
+					$cropX = floor(($originalWidth - $cropWidth) / 2);
+					$cropY = floor(($originalHeight - $cropHeight) / 2);
+					$this->cropImage($cropWidth, $cropHeight, $cropX, $cropY);
+					$this->setImagePage($cropWidth, $cropHeight, 0, 0);
+					$columns = $newWidth;
+					$rows = $newHeight;
+				}
+			}
+		}
+
+		if(defined('USE_VARIANTS') === true)
+		{
+			if(defined('USE_VARIANTS_LANCZOS') === true)
+			{
+				$this->optimalImage(
+					$columns,
+					$rows,
+					$bestfit,
+					false,
+					\Imagick::FILTER_LANCZOS);
+			}
+			else
+			{
+				$this->optimalImage(
+					$columns,
+					$rows,
+					$bestfit,
+					false,
+					$filter);
+			}
+
+			if ($crop === true)
+			{
+				$this->cropThumbnailImage($columns, $rows);
+			}
+		}
+		else
+		{
+			$this->optimalImage(
+				$columns,
+				$rows,
+				false,
+				false,
+				\Imagick::FILTER_TRIANGLE);
+		}
+
+		if ($optim === true)
+		{
+			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
+		}
+		else
+		{
+			$this->unsharpMaskImage(0.25, 0.25, 8, 0.065);
+		}
+
+		$this->posterizeImage(136, false);
+		$this->setImageCompressionQuality(82);
+		$this->setOption('jpeg:fancy-upsampling', 'off');
+		$this->setOption('png:compression-filter', '5');
+		$this->setOption('png:compression-level', '9');
+		$this->setOption('png:compression-strategy', '1');
+		$this->setOption('png:exclude-chunk', 'all');
+		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
+		$this->setColorspace(\Imagick::COLORSPACE_SRGB);
+
+		if ($optim === false)
+		{
+			$this->stripImage();
+		}
 	}
 }
