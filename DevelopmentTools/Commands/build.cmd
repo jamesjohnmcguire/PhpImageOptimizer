@@ -27,4 +27,3 @@ REM Currently, not working on windows - phpdocumentor bug
 REM CALL phpdocumentor --setting=graphs.enabled=true -d SourceCode -t Documentation
 
 :end
-CD ..
