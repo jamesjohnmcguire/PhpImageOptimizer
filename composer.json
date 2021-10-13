@@ -35,7 +35,8 @@
 	],
 	"require": {
 		"php": ">=7.1.0",
-		"ext-imagick": "*"
+		"ext-imagick": "*",
+		"gumlet/php-image-resize": "^2.0"
 	},
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",

@@ -12,11 +12,6 @@
 
 namespace DigitalZenWorks;
 
-if(defined('USE_VARIANTS') === true)
-{
-	// use Gumlet\ImageResize;
-}
-
 /**
  * ImageOptimizer - An Imagick extension to provide better (higher quality, lower file size) image resizes.
  *
@@ -242,7 +237,7 @@ class ImageOptimizer extends \Imagick
 		$ouput = null;
 		if(defined('USE_VARIANTS') === true)
 		{
-			$image = new ImageResize($file);
+			$image = new \Gumlet\ImageResize($file);
 			$image->quality_jpg = 100;
 
 			if ($width > 0 && $height === 0)
