@@ -13,7 +13,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003Aresize\u0028\u0029",
             "name": "resize",
-            "summary": "",
+            "summary": "Resize\u0020method.",
             "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_resize"
         },                {
             "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AsmartResize\u0028\u0029",
@@ -21,10 +21,10 @@ Search.appendIndex(
             "summary": "Resizes\u0020the\u0020image\u0020using\u0020smart\u0020defaults\u0020for\u0020high\u0020quality\u0020and\nlow\u0020file\u0020size.",
             "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_smartResize"
         },                {
-            "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AthumbnailImage\u0028\u0029",
-            "name": "thumbnailImage",
+            "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AoptimalImage\u0028\u0029",
+            "name": "optimalImage",
             "summary": "Changes\u0020the\u0020size\u0020of\u0020an\u0020image\u0020to\u0020the\u0020given\u0020dimensions\u0020and\nremoves\u0020any\u0020associated\u0020profiles.",
-            "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_thumbnailImage"
+            "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_optimalImage"
         },                {
             "fqsen": "\\",
             "name": "\\",

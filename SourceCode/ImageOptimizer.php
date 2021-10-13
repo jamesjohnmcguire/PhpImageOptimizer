@@ -1,17 +1,18 @@
 <?php
 /**
- * php-respimg <https://github.com/nwtn/php-respimg>
+ * Image Optimizer	<https://github.com/jamesjohnmcguire/PhpImageOptimizer>
  *
- * @author		David Newton <david@davidnewton.ca>
- * @author		James John McGuire <jamesjohnmcguire@gmail.com>
- * @copyright	2021 James John McGuire
- * @license     MIT https://opensource.org/licenses/MIT
- * @version		1.2.3
+ * @package   ImageOptimizer
+ * @author    David Newton <david@davidnewton.ca>
+ * @author    James John McGuire <jamesjohnmcguire@gmail.com>
+ * @copyright 2021 James John McGuire
+ * @license   MIT https://opensource.org/licenses/MIT
+ * @version   1.3.4
  */
 
 namespace DigitalZenWorks;
 
-if(defined('USE_VARIANTS'))
+if(defined('USE_VARIANTS') === true)
 {
 	// use Gumlet\ImageResize;
 }
@@ -39,45 +40,56 @@ class ImageOptimizer extends \Imagick
 	 *
 	 * Note that these are executed using PHP’s `exec` command, so there may be security implications.
 	 *
-	 * @access	public
+	 * @param string  $path            The path to the file or directory that should be optimized.
+	 * @param integer $svgo            The number of times to optimize using SVGO.
+	 * @param integer $imageOptimizer1 The number of times to optimize using image_optim.
+	 * @param integer $picopt          The number of times to optimize using picopt.
+	 * @param integer $imageOptim      The number of times to optimize using ImageOptim.
 	 *
-	 * @param	string	$path			The path to the file or directory that should be optimized.
-	 * @param	integer	$svgo			The number of times to optimize using SVGO.
-	 * @param	integer	$image_optim	The number of times to optimize using image_optim.
-	 * @param	integer	$picopt			The number of times to optimize using picopt.
-	 * @param	integer	$imageOptim		The number of times to optimize using ImageOptim.
+	 * @return string $output
 	 */
 	public static function optimize(
-		$path, $svgo = 0, $image_optim = 0, $picopt = 0, $imageOptim = 0)
+		string $path,
+		int $svgo = 0,
+		int $imageOptimizer1 = 0,
+		int $picopt = 0,
+		int $imageOptim = 0) : string
 	{
 		$output = false;
 
-		// make sure the path is real
-		if (file_exists($path))
-		{
-			$is_dir = is_dir($path);
+		// Make sure the path is real.
+		$exists = file_exists($path);
 
-			if (!$is_dir)
+		if ($exists === true)
+		{
+			$isDir = is_dir($path);
+
+			if ($isDir === false)
 			{
-				$dir = escapeshellarg(substr($path, 0, strrpos($path, '/')));
-				$file = escapeshellarg(substr($path, strrpos($path, '/') + 1));
+				$position = strrpos($path, '/');
+				$baseName = substr($path, 0, $position);
+				$dir = escapeshellarg($baseName);
+
+				$position = strrpos($path, '/');
+				$position++;
+				$baseName = substr($path, $position);
+				$file = escapeshellarg($baseName);
 			}
 
 			$path = escapeshellarg($path);
 
-			// make sure we got some ints up in here
+			// Make sure we got some ints up in here.
 			$svgo = (int) $svgo;
-			$image_optim = (int) $image_optim;
+			$imageOptimizer1 = (int) $imageOptimizer1;
 			$picopt = (int) $picopt;
 			$imageOptim = (int) $imageOptim;
 
-			// create some vars to store output
-			$output = array();
-			$return_var = 0;
+			// Create some vars to store output.
+			$output = [];
+			$returnVar = 0;
 
-			// if we’re using image_optim,
-			// we need to create the YAML config file
-			if ($image_optim > 0)
+			// If we’re using imageOptimizer1, need to create the YAML config file.
+			if ($imageOptimizer1 > 0)
 			{
 				$contents = "verbose: true\njpegtran:\n  progressive: false\n" .
 					"optipng:\n  level: 7\n  interlace: false\npngcrush:\n  " .
@@ -86,109 +98,117 @@ class ImageOptimizer extends \Imagick
 				file_put_contents($yml, $content);
 			}
 
-			// do the svgo optimizations
+			// Do the svgo optimizations.
 			for ($i = 0; $i < $svgo; $i++)
 			{
-				$additional_arguments =
+				$additionalArguments =
 					$path . ' --disable removeUnknownsAndDefaults';
-				if ($is_dir)
+
+				if ($isDir === true)
 				{
-					$raw_command = 'svgo -f ' . $additional_arguments;
+					$rawCommand = 'svgo -f ' . $additionalArguments;
 				}
 				else
 				{
-					$raw_command = 'svgo -i ' . $additional_arguments;
+					$rawCommand = 'svgo -i ' . $additionalArguments;
 				}
-				$command = escapeshellcmd($raw_command);
-				exec($command, $output, $return_var);
+				$command = escapeshellcmd($rawCommand);
+				exec($command, $output, $returnVar);
 
-				if ($return_var != 0)
+				if ($returnVar !== 0)
 				{
 					return false;
 				}
 			}
 
-			if(defined('USE_VARIANTS'))
+			if(defined('USE_VARIANTS') === true)
 			{
-				$disableSVGO = 0 === $svgo ? '--no-svgo' : '';
+				$disableSVGO = '';
+
+				if ($svgo < 1)
+				{
+					$disableSVGO = '--no-svgo';
+				}
 			}
 
-			// do the image_optim optimizations
-			for ($i = 0; $i < $image_optim; $i++)
+			// Do the imageOptimizer1 optimizations.
+			for ($i = 0; $i < $imageOptimizer1; $i++)
 			{
-				$base_command =
+				$baseCommand =
 					'image_optim -r ' . $path . ' --config-paths ' . $yml;
 
-				if(defined('USE_VARIANTS'))
+				if(defined('USE_VARIANTS') === true)
 				{
-					$base_command .=  ' ' .$disableSVGO;
+					$baseCommand .= ' ' . $disableSVGO;
 				}
 
-				$command = escapeshellcmd($base_command);
-				exec($command, $output, $return_var);
+				$command = escapeshellcmd($baseCommand);
+				exec($command, $output, $returnVar);
 
-				if ($return_var != 0)
+				if ($returnVar !== 0)
 				{
 					unlink($yml);
 					return false;
 				}
 			}
 
-			// do the picopt optimizations
+			// Do the picopt optimizations.
 			for ($i = 0; $i < $picopt; $i++)
 			{
 				$command = escapeshellcmd('picopt -r ' . $path);
-				exec($command, $output, $return_var);
+				exec($command, $output, $returnVar);
 
-				if ($return_var != 0)
+				if ($returnVar !== 0)
 				{
 					unlink($yml);
 					return false;
 				}
 			}
 
-			// do the ImageOptim optimizations
-			// ImageOptim can’t handle the path with single quotes,
-			// so we have to strip them
-			// ImageOptim-CLI has an issue where it only works with
-			// a directory, not a single file
+			/*
+			 * Do the ImageOptim optimizations
+			 * ImageOptim can’t handle the path with single quotes,
+			 * so we have to strip them
+			 * ImageOptim-CLI has an issue where it only works with a directory,
+			 * not a single file
+			 */
 			for ($i = 0; $i < $imageOptim; $i++)
 			{
-				if ($is_dir)
+				if ($isDir === true)
 				{
-					$base_command = 'imageoptim -d ' . $path . ' -q';
+					$baseCommand = 'imageoptim -d ' . $path . ' -q';
 				}
 				else
 				{
-					$base_command = 'find ' . $dir . ' -name ' . $file;
+					$baseCommand = 'find ' . $dir . ' -name ' . $file;
 				}
 
-				if(defined('USE_VARIANTS'))
+				if(defined('USE_VARIANTS') === true)
 				{
-					if ($is_dir)
+					if ($isDir === true)
 					{
-						$base_command .= $disableSVGO;
+						$baseCommand .= $disableSVGO;
 					}
 					else
 					{
-						$base_command = 'find ' . $dir . ' -name ' . $file;
+						$baseCommand = 'find ' . $dir . ' -name ' . $file;
 						$command .= ' | imageoptim ' . $disableSVGO;
 					}
 				}
 
-				$command = escapeshellcmd($base_command);
+				$command = escapeshellcmd($baseCommand);
 
-				if(defined('USE_VARIANTS'))
+				if(defined('USE_VARIANTS') === true)
 				{
-					if (!$is_dir)
+					if ($isDir === false)
 					{
 						$command .= $disableSVGO;
 					}
 				}
 
-				exec($command, $output, $return_var);
+				exec($command, $output, $returnVar);
 
-				if ($return_var != 0)
+				if ($returnVar !== 0)
 				{
 					unlink($yml);
 					return false;
@@ -200,39 +220,53 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
-	 * @param $file
-	 * @param $width
-	 * @param $height
-	 * @param $output
+	 * Resize method.
+	 *
+	 * Variant method from forked repository avonis/respimg.
+	 * Untested! Unverified!  Requires Gumlet\ImageResize.
+	 *
+	 * @param string  $file        The file to process.
+	 * @param integer $width       The width to resize to.
+	 * @param integer $height      The height to resize to.
+	 * @param string  $destination The file path to save to.
 	 *
 	 * @return mixed
-	 * @throws \Gumlet\ImageResizeException
+	 * @throws \Gumlet\ImageResizeException Something went wrong.
 	 */
-	public function resize($file, $width, $height, $output)
+	public function resize(
+		string $file,
+		int $width,
+		int $height,
+		string $destination)
 	{
 		$ouput = null;
-		if(defined('USE_VARIANTS'))
+		if(defined('USE_VARIANTS') === true)
 		{
 			$image = new ImageResize($file);
 			$image->quality_jpg = 100;
 
-			if ( $width && !$height ) {
+			if ($width > 0 && $height === 0)
+			{
 				$image->resizeToWidth($width);
 			};
-			if ( $height && !$width ) {
+
+			if ($height > 0 && $width === 0)
+			{
 				$image->resizeToHeight($height);
 			};
-			if ( $width && $height ) {
+
+			if ($width > 0 && $height > 0)
+			{
 				$image->resizeToBestFit($width, $height);
 			};
 
-			$image->save($output);
+			$image->save($destination);
 
-			$mozjpegCommand = "cjpeg -quality 85 -outfile {$output} {$output}";
+			$mozjpegCommand = "cjpeg -quality 85 -outfile {$destination} {$destination}";
 			exec($mozjpegCommand);
 		}
 
-		return $output;
+		return $destination;
 	}
 
 	/**
@@ -257,77 +291,96 @@ class ImageOptimizer extends \Imagick
 	 *  -define png:exclude-chunk=all -interlace none -colorspace sRGB \
 	 *  -strip INPUT_PATH`
 	 *
-	 * @access	public
+	 * @param integer $columns The number of columns in the output image.
+	 *                         0 = maintain aspect ratio based on $rows.
+	 * @param integer $rows    The number of rows in the output image.
+	 *                         0 = maintain aspect ratio based on $columns.
+	 * @param boolean $optim   Whether you intend to perform optimization
+	 *                         on the resulting image. Note that setting this to
+	 *                         `true` doesn’t actually perform any optimization.
+     * @param integer $filter  The filter to use when generating
+	 *                         thumbnail image.
+     * @param boolean $bestfit Treat $columns and $rows as a bounding box
+	 *                         in which to fit the image.
+     * @param boolean $crop    Whether you want to crop the image.
 	 *
-	 * @param	integer	$columns	The number of columns in the output image.
-	 * 		0 = maintain aspect ratio based on $rows.
-	 * @param	integer	$rows		The number of rows in the output image.
-	 * 		0 = maintain aspect ratio based on $columns.
-	 * @param	bool	$optim		Whether you intend to perform optimization
-	 * 		on the resulting image. Note that setting this to `true` doesn’t
-	 * 		actually perform any optimization.
-     * @param	string	$filter		The filter to use when generating
-	 * 		thumbnail image
-     * @param	bool	$bestfit	Treat $columns and $rows as a bounding box
-	 * 		in which to fit the image.
-     * @param	bool	$crop		Whether you want to crop the image
+	 * @return void
 	 */
-	public function smartResize($columns, $rows, $optim = false,
-	$filter = \Imagick::FILTER_TRIANGLE, $bestfit = false, $crop = false)
-{
+	public function smartResize(
+		int $columns,
+		int $rows,
+		bool $optim = false,
+		int $filter = \Imagick::FILTER_TRIANGLE,
+		bool $bestfit = false,
+		bool $crop = false)
+	{
 		$this->setOption('filter:support', '2.0');
 
-		if(defined('USE_VARIANTS'))
+		if(defined('USE_VARIANTS') === true)
 		{
-			$orig_w = $this->getImageWidth();
-			$orig_h = $this->getImageHeight();
+			$originalWidth = $this->getImageWidth();
+			$originalHeight = $this->getImageHeight();
 
-			if ($orig_w < $columns || $orig_h < $rows)
+			if ($originalWidth > $columns && $originalHeight > $rows)
 			{
-				return false;
-			}
+				if ($columns !== 0 && $rows !== 0)
+				{
+					$newWidth = min($columns, $originalWidth);
+					$newHeight = min($rows, $originalHeight);
 
-			if ($columns !== 0 && $rows !== 0)
-			{
-				$new_w = min($columns, $orig_w);
-				$new_h = min($rows, $orig_h);
-				$size_ratio = max($new_w / $orig_w, $new_h / $orig_h);
-				$crop_w = round($new_w / $size_ratio);
-				$crop_h = round($new_h / $size_ratio);
-				$crop_x = floor(($orig_w - $crop_w) / 2);
-				$crop_y = floor(($orig_h - $crop_h) / 2);
-				$this->cropImage($crop_w, $crop_h, $crop_x, $crop_y);
-				$this->setImagePage($crop_w, $crop_h, 0, 0);
-				$columns = $new_w;
-				$rows = $new_h;
+					$temporaryWidth = ($newWidth / $originalWidth);
+					$temporaryHeight = ($newHeight / $originalHeight);
+					$sizeRatio = max($temporaryWidth, $temporaryHeight);
+
+					$cropWidth = round($newWidth / $sizeRatio);
+					$cropHeight = round($newHeight / $sizeRatio);
+					$cropX = floor(($originalWidth - $cropWidth) / 2);
+					$cropY = floor(($originalHeight - $cropHeight) / 2);
+					$this->cropImage($cropWidth, $cropHeight, $cropX, $cropY);
+					$this->setImagePage($cropWidth, $cropHeight, 0, 0);
+					$columns = $newWidth;
+					$rows = $newHeight;
+				}
 			}
 		}
 
-		if(defined('USE_VARIANTS'))
+		if(defined('USE_VARIANTS') === true)
 		{
-			if(defined('USE_VARIANTS_LANCZOS'))
+			if(defined('USE_VARIANTS_LANCZOS') === true)
 			{
-				$this->thumbnailImage(
-					$columns, $rows, $bestfit, false, \Imagick::FILTER_LANCZOS);
+				$this->optimalImage(
+					$columns,
+					$rows,
+					$bestfit,
+					false,
+					\Imagick::FILTER_LANCZOS);
 			}
 			else
 			{
-				$this->thumbnailImage(
-					$columns, $rows, $bestfit, false, $filter);
+				$this->optimalImage(
+					$columns,
+					$rows,
+					$bestfit,
+					false,
+					$filter);
 			}
 
-			if ($crop)
+			if ($crop === true)
 			{
 				$this->cropThumbnailImage($columns, $rows);
 			}
 		}
 		else
 		{
-			$this->thumbnailImage(
-				$columns, $rows, false, false, \Imagick::FILTER_TRIANGLE);
+			$this->optimalImage(
+				$columns,
+				$rows,
+				false,
+				false,
+				\Imagick::FILTER_TRIANGLE);
 		}
 
-		if ($optim)
+		if ($optim === true)
 		{
 			$this->unsharpMaskImage(0.25, 0.08, 8.3, 0.045);
 		}
@@ -346,7 +399,7 @@ class ImageOptimizer extends \Imagick
 		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
 		$this->setColorspace(\Imagick::COLORSPACE_SRGB);
 
-		if (!$optim)
+		if ($optim === false)
 		{
 			$this->stripImage();
 		}
@@ -356,45 +409,52 @@ class ImageOptimizer extends \Imagick
 	 * Changes the size of an image to the given dimensions and
 	 * removes any associated profiles.
 	 *
-	 * `thumbnailImage` changes the size of an image to the given dimensions and
+	 * `optimalImage` was originally named thumbnailImage.  But due to PHP's
+	 * stricter checking, along the modified default values would result in the
+	 * PHP warning of 'Declaration of should be compatible with
+	 * Imagick::thumbnailimage.
+	 *
+	 * `optimalImage` changes the size of an image to the given dimensions and
 	 * removes any associated profiles.  The goal is to produce small low cost
 	 * thumbnail images suited for display on the Web.
 	 *
-	 * With the original Imagick thumbnailImage implementation, there is no way
+	 * With the original Imagick optimalImage implementation, there is no way
 	 * to choose a resampling filter. This class recreates Imagick’s C
 	 * implementation and adds this additional feature.
 	 *
 	 * Note: <https://github.com/mkoppanen/imagick/issues/90> has been filed
 	 * for this issue.
 	 *
-	 * @access	public
+	 * @param integer $columns The number of columns in the output image.
+	 *                         0 = maintain aspect ratio based on $rows.
+	 * @param integer $rows    The number of rows in the output image.
+	 *                         0 = maintain aspect ratio based on $columns.
+	 * @param boolean $bestfit Treat $columns and $rows as a bounding box
+	 *                         in which to fit the image.
+	 * @param boolean $fill    Fill in the bounding box with
+	 *                         the background colour.
+	 * @param integer $filter  The resampling filter to use. Refer to
+	 *                         the list of filter constants at
+	 *                         <http://php.net/manual/en/imagick.constants.php>.
 	 *
-	 * @param	integer	$columns	The number of columns in the output image.
-	 * 		0 = maintain aspect ratio based on $rows.
-	 * @param	integer	$rows		The number of rows in the output image.
-	 * 		0 = maintain aspect ratio based on $columns.
-	 * @param	bool	$bestfit	Treat $columns and $rows as a bounding box
-	 * 		in which to fit the image.
-	 * @param	bool	$fill		Fill in the bounding box with
-	 * 		the background colour.
-	 * @param	integer	$filter		The resampling filter to use. Refer to
-	 * 		the list of filter constants at
-	 * 		<http://php.net/manual/en/imagick.constants.php>.
-	 *
-	 * @return	bool	Indicates whether the operation was performed
-	 * 		successfully.
+	 * @return boolean Indicates whether the operation was performed
+	 *                 successfully.
 	 */
-	public function thumbnailImage($columns, $rows, $bestfit = false,
-		$fill = false, $filter = \Imagick::FILTER_TRIANGLE)
+	public function optimalImage(
+		int $columns,
+		int $rows,
+		bool $bestfit = false,
+		bool $fill = false,
+		int $filter = \Imagick::FILTER_TRIANGLE)
 	{
-		// sample factor; defined in original ImageMagick thumbnailImage
+		// Sample factor; defined in original ImageMagick thumbnailImage
 		// function the scale to which the image should be resized using
-		// the `sample` function
-		$SampleFactor = 5;
+		// the `sample` function.
+		$sampleFactor = 5;
 
-		// filter whitelist
-		$filters = array
-		(
+		// Filter whitelist.
+		$filters =
+		[
 			\Imagick::FILTER_POINT,
 			\Imagick::FILTER_BOX,
 			\Imagick::FILTER_TRIANGLE,
@@ -410,92 +470,95 @@ class ImageOptimizer extends \Imagick
 			\Imagick::FILTER_LANCZOS,
 			\Imagick::FILTER_BESSEL,
 			\Imagick::FILTER_SINC
-		);
+		];
 
-		// Parse parameters given to function
+		// Parse parameters given to function.
 		$columns = (double) ($columns);
 		$rows = (double) ($rows);
 		$bestfit = (bool) $bestfit;
 		$fill = (bool) $fill;
 
-		// We can’t resize to (0,0)
+		// We can’t resize to (0,0).
 		if ($rows < 1 && $columns < 1)
 		{
 			return false;
 		}
 
-		// Set a default filter if an acceptable one wasn’t passed
-		if (!in_array($filter, $filters))
+		// Set a default filter if an acceptable one wasn’t passed.
+		$check = in_array($filter, $filters);
+
+		if ($check === false)
 		{
 			$filter = \Imagick::FILTER_TRIANGLE;
 		}
 
-		// figure out the output width and height
+		// Figure out the output width and height.
 		$width = (double) $this->getImageWidth();
 		$height = (double) $this->getImageHeight();
-		$new_width = $columns;
-		$new_height = $rows;
+		$newWidth = $columns;
+		$newHeight = $rows;
 
-		$x_factor = $columns / $width;
-		$y_factor = $rows / $height;
+		$widthFactor = ($columns / $width);
+		$heightFactor = ($rows / $height);
 		if ($rows < 1)
 		{
-			$new_height = round($x_factor * $height);
+			$newHeight = round($widthFactor * $height);
 		}
 		elseif ($columns < 1)
 		{
-			$new_width = round($y_factor * $width);
+			$newWidth = round($heightFactor * $width);
 		}
 
-		// if bestfit is true, the new_width/new_height of the image will be
+		// If bestfit is true, the newWidth/newHeight of the image will be
 		// different than the columns/rows parameters; those will define a
-		// bounding box in which the image will be fit
-		if ($bestfit && $x_factor > $y_factor)
+		// bounding box in which the image will be fit.
+		if ($bestfit === true && $widthFactor > $heightFactor)
 		{
-			$x_factor = $y_factor;
-			$new_width = round($y_factor * $width);
+			$widthFactor = $heightFactor;
+			$newWidth = round($heightFactor * $width);
 		}
-		elseif ($bestfit && $y_factor > $x_factor)
+		elseif ($bestfit === true && $heightFactor > $widthFactor)
 		{
-			$y_factor = $x_factor;
-			$new_height = round($x_factor * $height);
-		}
-
-		if ($new_width < 1)
-		{
-			$new_width = 1;
+			$heightFactor = $widthFactor;
+			$newHeight = round($widthFactor * $height);
 		}
 
-		if ($new_height < 1)
+		if ($newWidth < 1)
 		{
-			$new_height = 1;
+			$newWidth = 1;
 		}
 
-		// if we’re resizing the image to more than about 1/3 it’s original size
-		// then just use the resize function
-		if (($x_factor * $y_factor) > 0.1)
+		if ($newHeight < 1)
 		{
-			$this->resizeImage($new_width, $new_height, $filter, 1);
+			$newHeight = 1;
 		}
-		// if we’d be using sample to scale to smaller than 128x128,
-		// just use resize
-		elseif ((($SampleFactor * $new_width) < 128) ||
-			(($SampleFactor * $new_height) < 128))
+
+		// If we’re resizing the image to more than about 1/3 it’s original size
+		// then just use the resize function.
+		if (($widthFactor * $heightFactor) > 0.1)
 		{
-			$this->resizeImage($new_width, $new_height, $filter, 1);
+			$this->resizeImage($newWidth, $newHeight, $filter, 1);
 		}
-		// otherwise, use sample first, then resize
+		// If we’d be using sample to scale to smaller than 128x128, use resize.
+		elseif ((($sampleFactor * $newWidth) < 128) ||
+			(($sampleFactor * $newHeight) < 128))
+		{
+			$this->resizeImage($newWidth, $newHeight, $filter, 1);
+		}
+		// Otherwise, use sample first, then resize.
 		else
 		{
-			$this->sampleImage(
-				$SampleFactor * $new_width, $SampleFactor * $new_height);
-			$this->resizeImage($new_width, $new_height, $filter, 1);
+			$temporaryWidth = ($sampleFactor * $newWidth);
+			$temporaryHeight = ($sampleFactor * $newHeight);
+			$this->sampleImage($temporaryWidth, $temporaryHeight);
+			$this->resizeImage($newWidth, $newHeight, $filter, 1);
 		}
 
-		// if the alpha channel is not defined, make it opaque
-		if ($this->getImageAlphaChannel() == \Imagick::ALPHACHANNEL_UNDEFINED)
+		// If the alpha channel is not defined, make it opaque.
+		$channel = $this->getImageAlphaChannel();
+		if ($channel === \Imagick::ALPHACHANNEL_UNDEFINED)
 		{
-			if (defined( 'Imagick::ALPHACHANNEL_OFF' ))
+			if (defined('Imagick::ALPHACHANNEL_OFF') === true)
 			{
 				$channel = \Imagick::ALPHACHANNEL_OFF;
 			}
@@ -507,22 +570,26 @@ class ImageOptimizer extends \Imagick
 			$this->setImageAlphaChannel($channel);
 		}
 
-		// set the image’s bit depth to 8 bits
+		// Set the image’s bit depth to 8 bits.
 		$this->setImageDepth(8);
 
-		// turn off interlacing
+		// Turn off interlacing.
 		$this->setInterlaceScheme(\Imagick::INTERLACE_NO);
 
 		// Strip all profiles except color profiles.
-		foreach ($this->getImageProfiles('*', true) as $key => $value)
+		$profiles = $this->getImageProfiles('*', true);
+
+		foreach ($profiles as $key => $value)
 		{
-			if ($key != 'icc' && $key != 'icm' && $key != 'iptc')
+			if ($key !== 'icc' && $key !== 'icm' && $key !== 'iptc')
 			{
 				$this->removeImageProfile($key);
 			}
 		}
 
-		if (method_exists($this, 'deleteImageProperty'))
+		$exists = method_exists($this, 'deleteImageProperty');
+
+		if ($exists === true)
 		{
 			$this->deleteImageProperty('comment');
 			$this->deleteImageProperty('Thumb::URI');
@@ -548,24 +615,25 @@ class ImageOptimizer extends \Imagick
 		}
 
 		// In case user wants to fill use extent for it rather than creating a
-		// new canvas …fill out the bounding box
-		if ($bestfit && $fill && ($new_width != $columns ||
-			$new_height != $rows))
+		// new canvas …fill out the bounding box.
+		if ($bestfit === true && $fill === true && ($newWidth !== $columns ||
+			$newHeight !== $rows))
 		{
-			$extent_x = 0;
-			$extent_y = 0;
+			$extentWidth = 0;
+			$extentHeight = 0;
 
-			if ($columns > $new_width)
+			if ($columns > $newWidth)
 			{
-				$extent_x = ($columns - $new_width) / 2;
+				$extentWidth = (($columns - $newWidth) / 2);
 			}
 
-			if ($rows > $new_height)
+			if ($rows > $newHeight)
 			{
-				$extent_y = ($rows - $new_height) / 2;
+				$extentHeight = (($rows - $newHeight) / 2);
 			}
 
-			$this->extentImage($columns, $rows, 0 - $extent_x, $extent_y);
+			$temporaryWidth = (0 - $extentWidth);
+			$this->extentImage($columns, $rows, $temporaryWidth, $extentHeight);
 		}
 
 		return true;

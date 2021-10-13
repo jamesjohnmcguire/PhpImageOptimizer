@@ -1,5 +1,11 @@
 CD %~dp0
-CD ..\..\SourceCode
+CD ..\..
+
+CALL composer install
+
+CALL composer outdated
+
+CD SourceCode
 
 ECHO PHP code styles
 CALL ..\vendor\bin\phpcs -sp --standard=ruleset.xml .
@@ -21,4 +27,3 @@ REM Currently, not working on windows - phpdocumentor bug
 REM CALL phpdocumentor --setting=graphs.enabled=true -d SourceCode -t Documentation
 
 :end
-CD ..

@@ -6,7 +6,7 @@
  * @author		James John McGuire <jamesjohnmcguire@gmail.com>
  * @copyright	2021 James John McGuire
  * @license     MIT https://opensource.org/licenses/MIT
- * @version		1.2.3
+ * @version		1.3.4
  */
 
 // load the library
