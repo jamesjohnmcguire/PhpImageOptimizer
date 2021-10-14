@@ -24,7 +24,7 @@ namespace DigitalZenWorks;
 class ImageOptimizer extends \Imagick
 {
 	/**
-	 * alternateResize method.
+	 * AlternateResize method.
 	 *
 	 * Variant method from forked repository avonis/respimg.
 	 * Untested! Unverified!  Requires Gumlet\ImageResize.
@@ -47,7 +47,7 @@ class ImageOptimizer extends \Imagick
 		if(defined('USE_VARIANTS') === true)
 		{
 			$image = new \Gumlet\ImageResize($file);
-			$image->quality_jpg = 100;
+			$image->quality_jpg = 100; // phpcs:ignore
 
 			if ($width > 0 && $height === 0)
 			{
