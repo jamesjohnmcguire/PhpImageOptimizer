@@ -13,13 +13,16 @@
 namespace DigitalZenWorks;
 
 /**
- * ImageOptimizer - An Imagick extension to provide better (higher quality, lower file size) image resizes.
+ * ImageOptimizer - An Imagick extension to provide better (higher quality,
+ * lower file size) image resizes.
  *
- * This class extends Imagick (<http://php.net/manual/en/book.imagick.php>) based on
- * research into optimal image resizing techniques (<https://github.com/nwtn/image-resize-tests>).
+ * This class extends Imagick (<http://php.net/manual/en/book.imagick.php>)
+ * based on research into optimal image resizing techniques
+ * (<https://github.com/nwtn/image-resize-tests>).
  *
- * Using these methods with their default settings should provide image resizing that is
- * visually indistinguishable from Photoshop’s “Save for Web…”, but at lower file sizes.
+ * Using these methods with their default settings should provide image
+ * resizing that is visually indistinguishable from Photoshop’s “Save for Web…”,
+ * but at lower file sizes.
  */
 class ImageOptimizer extends \Imagick
 {
