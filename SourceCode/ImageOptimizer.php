@@ -77,6 +77,28 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
+	 * Checks if the svgo program is available on the $PATH.
+	 *
+	 * @return boolean Indicates whether the svgo program is available on
+	 *                 the $PATH.
+	 */
+	public static function isSvgoEnabled()
+	{
+		$result = false;
+
+		// Test if external program is present.
+		$command = escapeshellcmd('svgo');
+		exec($command, $output, $returnVar);
+
+		if ($returnVar === 0)
+		{
+			$result = true;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Changes the size of an image to the given dimensions and
 	 * removes any associated profiles.
 	 *
@@ -313,20 +335,27 @@ class ImageOptimizer extends \Imagick
 	/**
 	 * Optimizes the image without reducing quality.
 	 *
-	 * This function calls up to four external programs, which must be installed and available in the $PATH:
+	 * This function calls up to four external programs, which must be installed
+	 * and available in the $PATH:
 	 *
 	 * * SVGO
 	 * * image_optim
 	 * * picopt
 	 * * ImageOptim
 	 *
-	 * Note that these are executed using PHP’s `exec` command, so there may be security implications.
+	 * Note that these are executed using PHP’s `exec` command, so there may be
+	 * security implications.
 	 *
-	 * @param string  $path            The path to the file or directory that should be optimized.
-	 * @param integer $svgo            The number of times to optimize using SVGO.
-	 * @param integer $imageOptimizer1 The number of times to optimize using image_optim.
-	 * @param integer $picopt          The number of times to optimize using picopt.
-	 * @param integer $imageOptim      The number of times to optimize using ImageOptim.
+	 * @param string  $path            The path to the file or directory that
+	 *                                 should be optimized.
+	 * @param integer $svgo            The number of times to optimize using
+	 *                                 SVGO.
+	 * @param integer $imageOptimizer1 The number of times to optimize using
+	 *                                 image_optim.
+	 * @param integer $picopt          The number of times to optimize using
+	 *                                 picopt.
+	 * @param integer $imageOptim      The number of times to optimize using
+	 *                                 ImageOptim.
 	 *
 	 * @return string $output
 	 */
@@ -370,37 +399,24 @@ class ImageOptimizer extends \Imagick
 			$output = [];
 			$returnVar = 0;
 
-			// If we’re using imageOptimizer1, need to create the YAML config file.
+			// If we’re using imageOptimizer1,
+			// need to create the YAML config file.
 			if ($imageOptimizer1 > 0)
 			{
 				$contents = "verbose: true\njpegtran:\n  progressive: false\n" .
 					"optipng:\n  level: 7\n  interlace: false\npngcrush:\n  " .
 					"fix: true\n  brute: true\npngquant:\n  speed: 11\n";
-				$yml = tempnam('/tmp', 'yml');
-				file_put_contents($yml, $content);
+				$tempDirectory = sys_get_temp_dir();
+				$yml = tempnam($tempDirectory, 'yml');
+				file_put_contents($yml, $contents);
 			}
 
 			// Do the svgo optimizations.
-			for ($i = 0; $i < $svgo; $i++)
+			$result = self::svgoOptimize($svgo, $isDir);
+
+			if ($result === false)
 			{
-				$additionalArguments =
-					$path . ' --disable removeUnknownsAndDefaults';
-
-				if ($isDir === true)
-				{
-					$rawCommand = 'svgo -f ' . $additionalArguments;
-				}
-				else
-				{
-					$rawCommand = 'svgo -i ' . $additionalArguments;
-				}
-				$command = escapeshellcmd($rawCommand);
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					return false;
-				}
+				return false;
 			}
 
 			if(defined('USE_VARIANTS') === true)
@@ -635,5 +651,57 @@ class ImageOptimizer extends \Imagick
 		{
 			$this->stripImage();
 		}
+	}
+
+	/**
+	 * Optimize an image using the svgo program.
+	 *
+	 * @param string  $path  The path to the file or directory that should be
+	 *                       optimized.
+	 * @param integer $svgo  The number of times to optimize the image.
+	 * @param boolean $isDir Indicates that the given path is a directory
+	 *                       or a file.
+	 *
+	 * @return boolean Indicates whether the operation was performed
+	 *                 successfully.
+	 */
+	private static function svgoOptimize(string $path, int $svgo, bool $isDir)
+	{
+		$result = false;
+
+		// Test if external program is present.
+		$command = escapeshellcmd('svgo');
+		exec($command, $output, $returnVar);
+
+		if ($returnVar === 0)
+		{
+			// Do the svgo optimizations.
+			for ($index = 0; $index < $svgo; $index++)
+			{
+				$additionalArguments =
+					$path . ' --disable removeUnknownsAndDefaults';
+
+				if ($isDir === true)
+				{
+					$rawCommand = 'svgo -f ' . $additionalArguments;
+				}
+				else
+				{
+					$rawCommand = 'svgo -i ' . $additionalArguments;
+				}
+
+				$command = escapeshellcmd($rawCommand);
+				exec($command, $output, $returnVar);
+
+				if ($returnVar !== 0)
+				{
+					return false;
+				}
+			}
+
+			$result = true;
+		}
+
+		return $result;
 	}
 }
