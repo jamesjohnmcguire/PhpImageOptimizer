@@ -77,6 +77,45 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
+	 * Checks if the imageoptim program is available on the $PATH.
+	 *
+	 * @return boolean Indicates whether the imageoptim program is available on
+	 *                 the $PATH.
+	 */
+	public static function isImageOptimEnabled()
+	{
+		$result = self::isExternalProgramEnabled('imageoptim');
+
+		return $result;
+	}
+
+	/**
+	 * Checks if the image_optim program is available on the $PATH.
+	 *
+	 * @return boolean Indicates whether the image_optim program is available on
+	 *                 the $PATH.
+	 */
+	public static function isImageUnderscoreOptimEnabled()
+	{
+		$result = self::isExternalProgramEnabled('image_optim');
+
+		return $result;
+	}
+
+	/**
+	 * Checks if the picopt program is available on the $PATH.
+	 *
+	 * @return boolean Indicates whether the picopt program is available on
+	 *                 the $PATH.
+	 */
+	public static function isPicOptEnabled()
+	{
+		$result = self::isExternalProgramEnabled('picopt');
+
+		return $result;
+	}
+
+	/**
 	 * Checks if the svgo program is available on the $PATH.
 	 *
 	 * @return boolean Indicates whether the svgo program is available on
@@ -84,16 +123,7 @@ class ImageOptimizer extends \Imagick
 	 */
 	public static function isSvgoEnabled()
 	{
-		$result = false;
-
-		// Test if external program is present.
-		$command = escapeshellcmd('svgo');
-		exec($command, $output, $returnVar);
-
-		if ($returnVar === 0)
-		{
-			$result = true;
-		}
+		$result = self::isExternalProgramEnabled('svgo');
 
 		return $result;
 	}
@@ -651,6 +681,30 @@ class ImageOptimizer extends \Imagick
 		{
 			$this->stripImage();
 		}
+	}
+
+	/**
+	 * Checks if the external program is available on the $PATH.
+	 *
+	 * @param string $program The name of the program to check for.
+	 *
+	 * @return boolean Indicates whether the external program is available on
+	 *                 the $PATH.
+	 */
+	private static function isExternalProgramEnabled(string $program) : bool
+	{
+		$result = false;
+
+		// Test if external program is present.
+		$command = escapeshellcmd($program);
+		exec($command, $output, $returnResult);
+
+		if ($returnResult === 0)
+		{
+			$result = true;
+		}
+
+		return $result;
 	}
 
 	/**
