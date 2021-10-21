@@ -15,11 +15,12 @@ require_once __DIR__ . '/../SourceCode/ImageOptimizer.php';
 use DigitalZenWorks\ImageOptimizer;
 
 // define the types of raster files we’re allowing
-$exts = array(
+$extensions =
+[
 	'jpeg',
 	'jpg',
 	'png'
-);
+];
 
 // setup
 $path_raster_i = __DIR__ . '/assets/raster';
@@ -28,20 +29,31 @@ $path_svg_i = __DIR__ . '/assets/svg';
 $path_svg_o = __DIR__ . '/generated/default/svg';
 
 // widths
-$widths = array(320, 640, 1280);
+$widths =
+[
+	320, 640, 1280
+];
 
 // resize raster inputs
-if ($dir = opendir($path_raster_i)) {
-	while (($file = readdir($dir)) !== false) {
-		$base = pathinfo($file, PATHINFO_BASENAME);
-		$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+$directoryHandle = opendir($path_raster_i);
 
-		if (in_array($ext, $exts)) {
-			foreach ($widths as $w) {
-				echo 'Resizing ' . $file . ' to ' . $w . '…';
+if ($directoryHandle !== false)
+{
+	while (($file = readdir($directoryHandle)) !== false)
+	 {
+		$base = pathinfo($file, PATHINFO_BASENAME);
+		$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		if (in_array($extension, $extensions))
+		{
+			foreach ($widths as $width)
+			{
+				echo 'Resizing ' . $file . ' to ' . $width . '…';
 				$image = new ImageOptimizer($path_raster_i . '/' . $file);
-				$image->smartResize($w, 0, true);
-				$image->writeImage($path_raster_o . '/' . $base . '-w' . $w . '.' . $ext);
+				$image->smartResize($width, 0, true);
+				$destination = $path_raster_o . '/' . $base . '-w' . $width .
+					'.' . $extension;
+				$image->writeImage($destination);
 				echo "OK\n";
 			}
 		}
@@ -49,14 +61,19 @@ if ($dir = opendir($path_raster_i)) {
 }
 
 // copy SVGs
-if ($dir = opendir($path_svg_i)) {
-	while (($file = readdir($dir)) !== false) {
+if ($directoryHandle = opendir($path_svg_i))
+{
+	while (($file = readdir($directoryHandle)) !== false)
+	{
 		$base = pathinfo($file, PATHINFO_BASENAME);
-		$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+		$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-		if ($ext === 'svg') {
+		if ($extension === 'svg')
+		{
 			echo 'Copying ' . $file . '…';
-			copy($path_svg_i . '/' . $file, $path_svg_o . '/' . $file);
+			$source = $path_svg_i . '/' . $file;
+			$destination = $path_svg_o . '/' . $file;
+			copy($source, $destination);
 			echo "OK\n";
 		}
 	}
@@ -64,9 +81,14 @@ if ($dir = opendir($path_svg_i)) {
 
 // optimize outputs
 echo 'Optimizing…';
-if (ImageOptimizer::optimize( __DIR__ . '/generated', 3, 1, 1, 1)) {
+$result = ImageOptimizer::optimize( __DIR__ . '/generated', 3, 1, 1, 1);
+
+if ($result === true)
+{
 	echo "OK\n";
-} else {
+}
+else
+{
 	echo "failed\n";
 }
 
