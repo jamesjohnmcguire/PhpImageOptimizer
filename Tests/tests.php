@@ -79,17 +79,27 @@ if ($directoryHandle = opendir($path_svg_i))
 	}
 }
 
-// optimize outputs
-echo 'Optimizing…';
-$result = ImageOptimizer::optimize( __DIR__ . '/generated', 3, 1, 1, 1);
+$imageOptim = ImageOptimizer::isImageOptimEnabled();
+$imageUnderscoreOptim = ImageOptimizer::isImageUnderscoreOptimEnabled();
+$picOpt = ImageOptimizer::isPicOptEnabled();
+$svgo = ImageOptimizer::isSvgoEnabled();
 
-if ($result === true)
+// only run these tests, if at least one of the programs is present
+if ($imageOptim === true || $imageUnderscoreOptim == true || $picOpt === true ||
+	$svgo == true)
 {
-	echo "OK\n";
-}
-else
-{
-	echo "failed\n";
+	// optimize outputs
+	echo 'Optimizing…';
+	$result = ImageOptimizer::optimize( __DIR__ . '/generated', 3, 1, 1, 1);
+
+	if ($result === true)
+	{
+		echo "OK\n";
+	}
+	else
+	{
+		echo "failed\n";
+	}
 }
 
 echo "Done\n";
