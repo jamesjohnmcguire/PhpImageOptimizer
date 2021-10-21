@@ -686,10 +686,12 @@ class ImageOptimizer extends \Imagick
 	/**
 	 * Checks if the external program is available on the $PATH.
 	 *
+	 * @param string $program The name of the program to check for.
+	 *
 	 * @return boolean Indicates whether the external program is available on
 	 *                 the $PATH.
 	 */
-	private static function isExternalProgramEnabled($program)
+	private static function isExternalProgramEnabled(string $program) : bool
 	{
 		$result = false;
 
