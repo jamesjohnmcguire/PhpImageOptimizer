@@ -684,6 +684,312 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
+	 * Easy image resize function.
+	 *
+	 * Uses PHP GD library functions.
+	 *
+	 * @param string  $file           File name to resize.
+	 * @param string  $output         Name of the new file. Iinclude path if
+	 *                                needed.
+	 * @param integer $width          New image width.
+	 * @param integer $height         New image height.
+	 * @param boolean $proportional   Keep image proportional, default is false.
+	 * @param integer $quality        Enter 1-100. 100 is best quality.
+	 *                                Default is 100.
+	 * @param boolean $grayscale      If true, image will be grayscale.
+	 *                                Default is false.
+	 * @param boolean $deleteOriginal If true the original file will be deleted.
+	 *
+	 * @return boolean|resource
+	 */
+	public static function smartResizeFile(
+		string $file,
+		string $output = 'file',
+		int $width = 0,
+		int $height = 0,
+		bool $proportional = false,
+		int $quality = 100,
+		bool $grayscale = false,
+		bool $deleteOriginal = true)
+	{
+		$data = file_get_contents($file);
+
+		$result = self::smartResizeImage(
+			$data,
+			$output,
+			$width,
+			$height,
+			$proportional,
+			$quality,
+			$grayscale,
+			$deleteOriginal);
+
+		return $result;
+	}
+
+	/**
+	 * Easy image resize function.
+	 *
+	 * Uses PHP GD library functions
+	 *
+	 * @param string  $string         The image data, as a string.
+	 * @param string  $output         Name of the new file. Iinclude path if
+	 *                                needed.
+	 * @param integer $width          New image width.
+	 * @param integer $height         New image height.
+	 * @param boolean $proportional   Keep image proportional, default is false.
+	 * @param integer $quality        Enter 1-100. 100 is best quality.
+	 *                                Default is 100.
+	 * @param boolean $grayscale      If true, image will be grayscale.
+	 *                                Default is false.
+	 * @param boolean $deleteOriginal If true the original file will be deleted.
+	 *
+	 * @return boolean|resource
+	 */
+	public static function smartResizeImage(
+		string $string = null,
+		string $output = 'file',
+		int $width = 0,
+		int $height = 0,
+		bool $proportional = false,
+		int $quality = 100,
+		bool $grayscale = false,
+		bool $deleteOriginal = true)
+	{
+		$result = false;
+
+		if (($height > 0 || $width > 0) && $string === null)
+		{
+			// Setting defaults and meta.
+			$image = '';
+
+			$info = getimagesizefromstring($string);
+
+			list($sourceWidth, $sourceHeight, $imageType) = $info;
+
+			$destinationDimensions = self::calculateDestinationDimensions(
+				$width,
+				$height,
+				$sourceWidth,
+				$sourceHeight);
+
+			list($destinationWidth, $destinationHeight) =
+				 $destinationDimensions;
+
+			$cropWidth = 0;
+			$cropHeight = 0;
+
+			// Calculating proportionality.
+			if ($proportional === false)
+			{
+				$widthFactor = ($sourceWidth / $width);
+				$heightFactor = ($sourceHeight / $height);
+
+				$factor = min($widthFactor, $heightFactor);
+
+				$cropWidth = ($width * $factor);
+				$cropWidth = ($sourceWidth - $cropWidth);
+				$cropWidth = ($cropWidth / 2);
+
+				$cropHeight = ($height * $factor);
+				$cropHeight = ($sourceHeight - $cropHeight);
+				$cropHeight = ($cropHeight / 2);
+			}
+
+			// Loading image to memory according to type.
+			$image = imagecreatefromstring($string);
+
+			if ($image !== null)
+			{
+				// Make the image grayscale, if needed.
+				if ($grayscale === true)
+				{
+					imagefilter($image, IMG_FILTER_GRAYSCALE);
+				}
+
+				// This is the resizing/resampling/transparency-preserving
+				// magic.
+				$imageResized =
+					imagecreatetruecolor($destinationWidth, $destinationHeight);
+
+				if ($imageType === IMAGETYPE_GIF ||
+					$imageType === IMAGETYPE_PNG)
+				{
+					$transparency = imagecolortransparent($image);
+					$palletsize = imagecolorstotal($image);
+
+					if ($transparency >= 0 && $transparency < $palletsize)
+					{
+						$transparentColor =
+							imagecolorsforindex($image, $transparency);
+						$transparency = imagecolorallocate(
+							$imageResized,
+							$transparentColor['red'],
+							$transparentColor['green'],
+							$transparentColor['blue']);
+
+						imagefill($imageResized, 0, 0, $transparency);
+						imagecolortransparent($imageResized, $transparency);
+					}
+					elseif ($imageType === IMAGETYPE_PNG)
+					{
+						imagealphablending($imageResized, false);
+						$color = imagecolorallocatealpha(
+							$imageResized,
+							0,
+							0,
+							0,
+							127);
+
+						imagefill($imageResized, 0, 0, $color);
+						imagesavealpha($imageResized, true);
+					}
+				}
+
+				$sourceWidth = (2 * $cropWidth);
+				$sourceWidth = ($sourceWidth - $sourceWidth);
+				$sourceHeight = (2 * $cropHeight);
+				$sourceHeight = ($sourceHeight - $sourceHeight);
+
+				imagecopyresampled(
+					$imageResized,
+					$image,
+					0,
+					0,
+					$cropWidth,
+					$cropHeight,
+					$destinationWidth,
+					$destinationHeight,
+					$sourceWidth,
+					$sourceHeight);
+
+				// Taking care of original, if needed.
+				if ($deleteOriginal === true)
+				{
+					@unlink($file);
+				}
+
+				// Preparing a method of providing result.
+				$destination = strtolower($output);
+				switch ($destination)
+				{
+					case 'browser':
+						$mime = image_type_to_mime_type($imageType);
+						header("Content-type: $mime");
+						$output = null;
+						break;
+					case 'file':
+						$output = $file;
+						break;
+					case 'return':
+						$result = $imageResized;
+						break;
+					default:
+						// Nothing to be done.
+						break;
+				}
+
+				// Writing image according to type to the output destination
+				// and image quality.
+				switch ($imageType)
+				{
+					case IMAGETYPE_GIF:
+						imagegif($imageResized, $output);
+						break;
+					case IMAGETYPE_JPEG:
+						imagejpeg($imageResized, $output, $quality);
+						break;
+					case IMAGETYPE_PNG:
+						$quality = (0.9 * $quality);
+						$quality = ($quality / 10.0);
+						$quality = (int) $quality;
+						$quality = (9 - $quality);
+						imagepng($imageResized, $output, $quality);
+						break;
+					default:
+						// Nothing to be done.
+						break;
+				}
+
+				$result = true;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Calculates the destination dimensions.
+	 *
+	 * @param integer $width        The width to calcuate to.
+	 * @param integer $height       The height to calcuate to.
+	 * @param integer $sourceWidth  The width of the source image.
+	 * @param integer $sourceHeight The height of the source image.
+	 *
+	 * @return array An array of destination width and height.
+	 */
+	private static function calculateDestinationDimensions(
+		int $width,
+		int $height,
+		int $sourceWidth,
+		int $sourceHeight)
+	{
+		$dimensions = [];
+		$destinationWidth = 0;
+		$destinationHeight = 0;
+
+		// Calculating proportionality.
+		if ($proportional === true)
+		{
+			if ($width === 0)
+			{
+				$factor = ($height / $sourceHeight);
+			}
+			elseif ($height === 0)
+			{
+				$factor = ($width / $sourceWidth);
+			}
+			else
+			{
+				$widthFactor = ($width / $sourceWidth);
+				$heightFactor = ($height / $sourceHeight);
+				$factor = min($widthFactor, $heightFactor);
+			}
+
+			$destinationWidth = ($sourceWidth * $factor);
+			$destinationWidth = round($destinationWidth);
+
+			$destinationHeight = ($sourceHeight * $factor);
+			$destinationHeight = round($destinationHeight);
+		}
+		else
+		{
+			if ($width > 0)
+			{
+				$destinationWidth = $width;
+			}
+			else
+			{
+				$destinationWidth = $sourceWidth;
+			}
+
+			if ($height > 0)
+			{
+				$destinationHeight = $height;
+			}
+			else
+			{
+				$destinationHeight = $sourceHeight;
+			}
+		}
+
+		$dimensions['width'] = $destinationWidth;
+		$dimensions['height'] = $destinationHeight;
+
+		return $dimensions;
+	}
+
+	/**
 	 * Checks if the external program is available on the $PATH.
 	 *
 	 * @param string $program The name of the program to check for.

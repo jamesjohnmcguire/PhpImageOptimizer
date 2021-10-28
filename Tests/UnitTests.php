@@ -58,10 +58,10 @@ final class UnitTests extends TestCase
 		$this->assertTrue($exists);
 
 		$size = filesize($source);
-		echo "size of source $source is $size\r\n";
+		$this->assertEquals($size, 457930);
 
 		$size = filesize($destination);
-		echo "size of destination $destination is $size\r\n";
+		$this->assertEquals($size, 453614);
 
 		// clean up
 		unlink($destination);
