@@ -113,6 +113,8 @@ class ImageOptimizer extends \Imagick
 				$fileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
 				$exists = function_exists('imagewebp');
+				$exists = false;
+
 				if ($exists === true)
 				{
 					echo "trying gd functions\r\n";
@@ -151,12 +153,12 @@ class ImageOptimizer extends \Imagick
 				}
 			 	else
 				{
-					$exists = class_exists('Imagick');
+					$exists = class_exists('\Imagick');
 					if ($exists === true)
 					{
 						echo "trying Imagick\r\n";
 
-						$image = new Imagick();
+						$image = new \Imagick();
 						$image->readImage($file);
 
 						if ($fileType === 'png')
@@ -382,7 +384,7 @@ class ImageOptimizer extends \Imagick
 		$channel = $this->getImageAlphaChannel();
 		if ($channel === \Imagick::ALPHACHANNEL_UNDEFINED)
 		{
-			if (defined('Imagick::ALPHACHANNEL_OFF') === true)
+			if (defined('\Imagick::ALPHACHANNEL_OFF') === true)
 			{
 				$channel = \Imagick::ALPHACHANNEL_OFF;
 			}
