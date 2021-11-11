@@ -112,65 +112,60 @@ class ImageOptimizer extends \Imagick
 			{
 				$fileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
-				$exists = function_exists('imagewebp');
-				$exists = false;
-
+				$exists = class_exists('\Imagick');
 				if ($exists === true)
 				{
-					echo "trying gd functions\r\n";
+					$image = new \Imagick();
+					$image->readImage($file);
 
-					switch ($fileType)
+					if ($fileType === 'png')
 					{
-						case 'jpeg':
-						case 'jpg':
-							$image = imagecreatefromjpeg($file);
-							break;
-						case 'png':
-							$image = imagecreatefrompng($file);
-							imagepalettetotruecolor($image);
-							imagealphablending($image, true);
-							imagesavealpha($image, true);
-							break;
-						case 'gif':
-							$image = imagecreatefromgif($file);
-							break;
-						default:
-							$image = null;
-							break;
+						$image->setImageFormat('webp');
+						$image->setImageCompressionQuality(
+							$compressionQuality);
+						$image->setOption('webp:lossless', 'true');
 					}
 
-					// Save the image.
-					$result =
-						imagewebp($image, $outputFile, $compressionQuality);
-
-					if (false !== $result)
-					{
-						// Free up memory.
-						imagedestroy($image);
-
-						$result = $outputFile;
-					}
+					$image->writeImage($outputFile);
+					$result = $outputFile;
 				}
 			 	else
 				{
-					$exists = class_exists('\Imagick');
+					$exists = function_exists('imagewebp');
+
 					if ($exists === true)
 					{
-						echo "trying Imagick\r\n";
-
-						$image = new \Imagick();
-						$image->readImage($file);
-
-						if ($fileType === 'png')
+						switch ($fileType)
 						{
-							$image->setImageFormat('webp');
-							$image->setImageCompressionQuality(
-								$compressionQuality);
-							$image->setOption('webp:lossless', 'true');
+							case 'jpeg':
+							case 'jpg':
+								$image = imagecreatefromjpeg($file);
+								break;
+							case 'png':
+								$image = imagecreatefrompng($file);
+								imagepalettetotruecolor($image);
+								imagealphablending($image, true);
+								imagesavealpha($image, true);
+								break;
+							case 'gif':
+								$image = imagecreatefromgif($file);
+								break;
+							default:
+								$image = null;
+								break;
 						}
-
-						$image->writeImage($outputFile);
-						$result = $outputFile;
+	
+						// Save the image.
+						$result =
+							imagewebp($image, $outputFile, $compressionQuality);
+	
+						if (false !== $result)
+						{
+							// Free up memory.
+							imagedestroy($image);
+	
+							$result = $outputFile;
+						}
 					}
 				}
 			}
