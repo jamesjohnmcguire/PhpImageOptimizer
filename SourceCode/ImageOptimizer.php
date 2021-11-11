@@ -115,6 +115,8 @@ class ImageOptimizer extends \Imagick
 				$exists = function_exists('imagewebp');
 				if ($exists === true)
 				{
+					echo "trying gd functions\r\n";
+
 					switch ($fileType)
 					{
 						case 'jpeg':
@@ -152,6 +154,8 @@ class ImageOptimizer extends \Imagick
 					$exists = class_exists('Imagick');
 					if ($exists === true)
 					{
+						echo "trying Imagick\r\n";
+
 						$image = new Imagick();
 						$image->readImage($file);
 
@@ -1124,8 +1128,7 @@ class ImageOptimizer extends \Imagick
 	{
 		$info = pathinfo($fileName);
 
-		$newName =
-			$info['dirname'] . '/' . $info['filename'] . '.' . $newExtension;
+		$newName = $info['dirname'] . '/' . $info['filename'] . $newExtension;
 
 		return $newName;
 	}
