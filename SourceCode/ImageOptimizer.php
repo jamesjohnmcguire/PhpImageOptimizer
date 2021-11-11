@@ -7,7 +7,7 @@
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
  * @copyright 2021 James John McGuire
  * @license   MIT https://opensource.org/licenses/MIT
- * @version   1.3.5
+ * @version   1.4.6
  */
 
 namespace DigitalZenWorks;
@@ -74,6 +74,104 @@ class ImageOptimizer extends \Imagick
 		}
 
 		return $destination;
+	}
+
+	/**
+	 * Generate Webp image.
+	 *
+	 * Uses either Imagick or GD imagewebp to generate webp image.  Originally
+	 * copied from https://www.jclabs.co.uk
+	 * /generate-webp-images-in-php-using-and-gd-or-imagick/.
+	 *
+	 * @param string  $file               Path to image being converted.
+	 * @param integer $compressionQuality Quality ranges from 0 (worst quality,
+	 *                                    smaller file) to 100 (best quality,
+	 *                                    biggest file).
+	 *
+	 * @return false|string Returns path to generated webp image,
+	 *                      otherwise returns false.
+	 */
+	public static function generateWebpFile(
+		string $file,
+		int $compressionQuality = 80)
+	{
+		$result = false;
+
+		$exists = file_exists($file);
+		if ($exists === true)
+		{
+			// If output file already exists return path.
+			$outputFile = self::replaceExtension($file, '.webp');
+
+			$exists = file_exists($outputFile);
+			if ($exists === true)
+			{
+				$result = $outputFile;
+			}
+			else
+			{
+				$fileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+				$exists = class_exists('\Imagick');
+				if ($exists === true)
+				{
+					$image = new \Imagick();
+					$image->readImage($file);
+
+					if ($fileType === 'png')
+					{
+						$image->setImageFormat('webp');
+						$image->setImageCompressionQuality(
+							$compressionQuality);
+						$image->setOption('webp:lossless', 'true');
+					}
+
+					$image->writeImage($outputFile);
+					$result = $outputFile;
+				}
+			 	else
+				{
+					$exists = function_exists('imagewebp');
+
+					if ($exists === true)
+					{
+						switch ($fileType)
+						{
+							case 'jpeg':
+							case 'jpg':
+								$image = imagecreatefromjpeg($file);
+								break;
+							case 'png':
+								$image = imagecreatefrompng($file);
+								imagepalettetotruecolor($image);
+								imagealphablending($image, true);
+								imagesavealpha($image, true);
+								break;
+							case 'gif':
+								$image = imagecreatefromgif($file);
+								break;
+							default:
+								$image = null;
+								break;
+						}
+	
+						// Save the image.
+						$result =
+							imagewebp($image, $outputFile, $compressionQuality);
+	
+						if (false !== $result)
+						{
+							// Free up memory.
+							imagedestroy($image);
+	
+							$result = $outputFile;
+						}
+					}
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	/**
@@ -281,7 +379,7 @@ class ImageOptimizer extends \Imagick
 		$channel = $this->getImageAlphaChannel();
 		if ($channel === \Imagick::ALPHACHANNEL_UNDEFINED)
 		{
-			if (defined('Imagick::ALPHACHANNEL_OFF') === true)
+			if (defined('\Imagick::ALPHACHANNEL_OFF') === true)
 			{
 				$channel = \Imagick::ALPHACHANNEL_OFF;
 			}
@@ -1011,6 +1109,25 @@ class ImageOptimizer extends \Imagick
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Replace file extension.
+	 *
+	 * @param string $fileName     Path to file in question.
+	 * @param string $newExtension The new extension.
+	 *
+	 * @return string Returns path to file with new extension.
+	 */
+	private static function replaceExtension(
+		string $fileName,
+		string $newExtension)
+	{
+		$info = pathinfo($fileName);
+
+		$newName = $info['dirname'] . '/' . $info['filename'] . $newExtension;
+
+		return $newName;
 	}
 
 	/**

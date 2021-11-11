@@ -1,8 +1,9 @@
 CD %~dp0
-CD ..\..
+CD ..
 
 CALL composer install
 
+ECHO composer outdated packages:
 CALL composer outdated
 
 CD SourceCode
