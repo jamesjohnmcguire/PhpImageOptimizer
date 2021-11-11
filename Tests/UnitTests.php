@@ -25,6 +25,22 @@ final class UnitTests extends TestCase
 	{
 	}
 
+	public function testGenerateWebpFail()
+	{
+		$source = "Tests/assets/raster/1xx.jpg";
+		$result = ImageOptimizer::generateWebpFile($source);
+
+		$this->assertEquals($result, false);
+	}
+
+	public function testGenerateWebpSuccess()
+	{
+		$source = "Tests/assets/raster/1A-1.jpg";
+		$result = ImageOptimizer::generateWebpFile($source);
+
+		$this->assertNotEquals($result, false);
+	}
+
 	public function testImageCopy()
 	{
 		$source = "Tests/assets/raster/1A-1.jpg";
