@@ -39,6 +39,14 @@ final class UnitTests extends TestCase
 		$result = ImageOptimizer::generateWebpFile($source);
 
 		$this->assertNotEquals($result, false);
+
+		$exists = file_exists($result);
+		$this->assertTrue($exists);
+
+		if ($exists ==- true)
+		{
+			unlink($result);
+		}
 	}
 
 	public function testImageCopy()
