@@ -1,5 +1,5 @@
 CD %~dp0
-CD ..\..
+CD ..
 
 CALL composer install
 
