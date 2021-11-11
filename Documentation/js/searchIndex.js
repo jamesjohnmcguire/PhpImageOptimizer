@@ -11,6 +11,11 @@ Search.appendIndex(
             "summary": "AlternateResize\u0020method.",
             "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_alternateResize"
         },                {
+            "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AgenerateWebpFile\u0028\u0029",
+            "name": "generateWebpFile",
+            "summary": "Generate\u0020Webp\u0020image.",
+            "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_generateWebpFile"
+        },                {
             "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AisImageOptimEnabled\u0028\u0029",
             "name": "isImageOptimEnabled",
             "summary": "Checks\u0020if\u0020the\u0020imageoptim\u0020program\u0020is\u0020available\u0020on\u0020the\u0020\u0024PATH.",
@@ -65,6 +70,11 @@ Search.appendIndex(
             "name": "isExternalProgramEnabled",
             "summary": "Checks\u0020if\u0020the\u0020external\u0020program\u0020is\u0020available\u0020on\u0020the\u0020\u0024PATH.",
             "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_isExternalProgramEnabled"
+        },                {
+            "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AreplaceExtension\u0028\u0029",
+            "name": "replaceExtension",
+            "summary": "Replace\u0020file\u0020extension.",
+            "url": "classes/DigitalZenWorks-ImageOptimizer.html#method_replaceExtension"
         },                {
             "fqsen": "\\DigitalZenWorks\\ImageOptimizer\u003A\u003AsvgoOptimize\u0028\u0029",
             "name": "svgoOptimize",

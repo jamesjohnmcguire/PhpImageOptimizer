@@ -139,6 +139,13 @@ but at lower file sizes.</p>
 <dd>AlternateResize method.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_generateWebpFile">generateWebpFile()</a>
+    <span>
+                        &nbsp;: false|string    </span>
+</dt>
+<dd>Generate Webp image.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_isImageOptimEnabled">isImageOptimEnabled()</a>
     <span>
                         &nbsp;: bool    </span>
@@ -216,6 +223,13 @@ low file size.</dd>
                         &nbsp;: bool    </span>
 </dt>
 <dd>Checks if the external program is available on the $PATH.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -private">
+    <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_replaceExtension">replaceExtension()</a>
+    <span>
+                        &nbsp;: string    </span>
+</dt>
+<dd>Replace file extension.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
     <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_svgoOptimize">svgoOptimize()</a>
@@ -334,6 +348,69 @@ Untested! Unverified!  Requires Gumlet\ImageResize.</p>
             -public
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_generateWebpFile">
+        generateWebpFile()
+        <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_generateWebpFile" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">94</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Generate Webp image.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">generateWebpFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$file</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$compressionQuality</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">80</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|string</span></code>
+
+        <section class="phpdocumentor-description"><p>Uses either Imagick or GD imagewebp to generate webp image.  Originally
+copied from https://www.jclabs.co.uk
+/generate-webp-images-in-php-using-and-gd-or-imagick/.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$file</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Path to image being converted.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$compressionQuality</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">80</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Quality ranges from 0 (worst quality,
+smaller file) to 100 (best quality,
+biggest file).</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">false|string</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>Returns path to generated webp image,
+otherwise returns false.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_isImageOptimEnabled">
         isImageOptimEnabled()
         <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_isImageOptimEnabled" class="headerlink"><i class="fas fa-link"></i></a>
@@ -341,7 +418,7 @@ Untested! Unverified!  Requires Gumlet\ImageResize.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">85</span>
+    <span class="phpdocumentor-element-found-in__line">183</span>
 
     </aside>
 
@@ -377,7 +454,7 @@ the $PATH.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">98</span>
+    <span class="phpdocumentor-element-found-in__line">196</span>
 
     </aside>
 
@@ -413,7 +490,7 @@ the $PATH.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">111</span>
+    <span class="phpdocumentor-element-found-in__line">209</span>
 
     </aside>
 
@@ -449,7 +526,7 @@ the $PATH.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">124</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 
     </aside>
 
@@ -485,7 +562,7 @@ the $PATH.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">264</span>
 
     </aside>
 
@@ -589,7 +666,7 @@ successfully.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">392</span>
+    <span class="phpdocumentor-element-found-in__line">490</span>
 
     </aside>
 
@@ -688,7 +765,7 @@ ImageOptim.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">587</span>
+    <span class="phpdocumentor-element-found-in__line">685</span>
 
     </aside>
 
@@ -789,7 +866,7 @@ in which to fit the image.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">705</span>
+    <span class="phpdocumentor-element-found-in__line">803</span>
 
     </aside>
 
@@ -902,7 +979,7 @@ Default is false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">749</span>
+    <span class="phpdocumentor-element-found-in__line">847</span>
 
     </aside>
 
@@ -1015,7 +1092,7 @@ Default is false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">931</span>
+    <span class="phpdocumentor-element-found-in__line">1029</span>
 
     </aside>
 
@@ -1089,7 +1166,7 @@ Default is false.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1000</span>
+    <span class="phpdocumentor-element-found-in__line">1098</span>
 
     </aside>
 
@@ -1130,6 +1207,62 @@ the $PATH.</p>
             -private
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_replaceExtension">
+        replaceExtension()
+        <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_replaceExtension" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">1122</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Replace file extension.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">private</span>
+            <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__name">replaceExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$newExtension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$fileName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>Path to file in question.</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$newExtension</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The new extension.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">string</span>
+            &mdash;
+            <section class="phpdocumentor-description"><p>Returns path to file with new extension.</p>
+</section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -private
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_svgoOptimize">
         svgoOptimize()
         <a href="classes/DigitalZenWorks-ImageOptimizer.html#method_svgoOptimize" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1137,7 +1270,7 @@ the $PATH.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="SourceCode/ImageOptimizer.php"><a href="files/sourcecode-imageoptimizer.html"><abbr title="SourceCode/ImageOptimizer.php">ImageOptimizer.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1028</span>
+    <span class="phpdocumentor-element-found-in__line">1145</span>
 
     </aside>
 
