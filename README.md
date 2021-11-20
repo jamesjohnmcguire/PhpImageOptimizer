@@ -103,10 +103,6 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Acknowledgments
-
-This project is heavily indebted to previous efforts of others to decipher the DBX file format.  Most notably, the original file format work by Arne Schloh and updated by Zvonko Tesic. [Details Here](https://www.infobyte.hr/oedbx/)
-
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
