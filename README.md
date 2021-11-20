@@ -1,20 +1,28 @@
 # PhpImageOptimizer
 
-A responsive image workflow for optimizing and resizing your images.
+A responsive image workflow for optimizing and resizing your images.  Details can be found in the excellent article at [Efficient Image Resizing With ImageMagick](https://www.smashingmagazine.com/2015/06/efficient-image-resizing-with-imagemagick/)
 
 Originally based off (forked) <https://github.com/nwtn/php-respimg>
 
 ## Requirements/dependencies
 
-* [PHP >= 5.3.0](http://php.net/)
+* [PHP >= 7.1.0](http://php.net/)
 * [ImageMagick](http://imagemagick.org/)
 * [ext-imagick](http://php.net/manual/en/book.imagick.php)
-* For SVG rasterization: [jonnyw/php-phantomjs 3.1.5](https://github.com/jonnnnyw/php-phantomjs)
-* For optimization, depending on what settings you pass:
+
+* Optional: For optimization, depending on what settings you pass:
 	* [SVGO](https://github.com/svg/svgo)
 	* [image_optim](https://github.com/toy/image_optim)
 	* [picopt](https://github.com/ajslater/picopt)
 	* [ImageOptim](https://imageoptim.com/)
+
+## Installation
+### Git
+git clone https://github.com/jamesjohnmcguire/PhpImageOptimizer
+
+### Composer
+composer require https://packagist.org/packages/digitalzenworks/php-image-optimizer
+
 
 ## Examples
 
@@ -82,30 +90,29 @@ if ($dir = opendir($input_path)) {
 DigitalZenWorks\ImageOptimizer::optimize($output_path, 3, 1, 1, 1);
 ```
 
-## Release History
+## Contributing
 
-### 1.0.1
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-* Library loading bug fix
-* Namespacing in README
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-### 1.0.0
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-* Major refactoring
-* Image optimization
-* SVG rasterization
-* Basic (non-unit) tests
+## Acknowledgments
 
-### 0.0.2
+This project is heavily indebted to previous efforts of others to decipher the DBX file format.  Most notably, the original file format work by Arne Schloh and updated by Zvonko Tesic. [Details Here](https://www.infobyte.hr/oedbx/)
 
-* Fix a path in the test file
-* Minor colorspace change (should have no effect on output)
-* Comments and stuff
+## License
 
-### 0.0.1
+Distributed under the MIT License. See `LICENSE` for more information.
 
-* Packagist release
+## Contact
 
-### 0.0.0
+Your Name - [@jamesmc](https://twitter.com/jamesmc) - jamesjohnmcguire@gmail.com
 
-* Super experimental pre-release. Feel free to mess about with it, but don’t expect much.
+Project Link: [https://github.com/jamesjohnmcguire/PhpImageOptimizer](https://github.com/jamesjohnmcguire/PhpImageOptimizer)
