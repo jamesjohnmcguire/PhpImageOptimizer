@@ -1,3 +1,7 @@
-Test USE_VARIANT changes.
-Enable USE_VARIANT changes, if appropriate.
-Generate new documentation with phpDocumentor
+Reference
+	https://packagist.org/packages/digitalzenworks/consumer-provider
+Tasks
+	Test USE_VARIANT changes.
+	Enable USE_VARIANT changes, if appropriate.
+consumer provider pattern
+	https://dzone.com/articles/producer-consumer-design
