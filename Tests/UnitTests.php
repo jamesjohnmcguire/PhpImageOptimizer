@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use DigitalZenWorks\ImageOptimizer as ImageOptimizer;
 
 /**
+ * Unit tests class.
  */
 final class UnitTests extends TestCase
 {
