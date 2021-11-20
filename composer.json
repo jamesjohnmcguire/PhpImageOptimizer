@@ -6,7 +6,6 @@
 	"minimum-stability": "dev",
 	"prefer-stable": true,
 	"type": "library",
-	"version": "1.2.1",
 	"authors": [
 		{
 			"name": "James John McGuire",
