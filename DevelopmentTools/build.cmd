@@ -13,7 +13,7 @@ ECHO PHP code styles
 CALL ..\vendor\bin\phpcs -sp --standard=ruleset.xml .
 
 CD ..
-CALL vendor\bin\phpunit -c Tests\phpunit.xml Tests\UnitTests.php %1 %2
+CALL vendor\bin\phpunit --testdox -c Tests\phpunit.xml Tests\UnitTests.php %1 %2
 
 if "%1" == "release" GOTO release
 GOTO end
