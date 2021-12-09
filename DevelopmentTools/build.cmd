@@ -1,7 +1,7 @@
 CD %~dp0
 CD ..
 
-CALL composer install
+CALL composer install --prefer-dist
 
 ECHO composer outdated packages:
 CALL composer outdated
