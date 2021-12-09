@@ -1,6 +1,7 @@
 #!/bin/bash
 cd ..
 
+composer validate --strict
 composer install --prefer-dist
 
 echo composer outdated packages:

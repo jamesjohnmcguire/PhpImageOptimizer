@@ -1,6 +1,7 @@
 CD %~dp0
 CD ..
 
+CALL composer validate --strict
 CALL composer install --prefer-dist
 
 ECHO composer outdated packages:
