@@ -5,7 +5,7 @@
  * @package   ImageOptimizer
  * @author    David Newton <david@davidnewton.ca>
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
- * @copyright 2021 James John McGuire
+ * @copyright 2021 - 2022 James John McGuire
  * @license   MIT https://opensource.org/licenses/MIT
  * @version   1.4.6
  */
