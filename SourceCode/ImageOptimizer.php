@@ -7,7 +7,7 @@
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
  * @copyright 2021 - 2022 James John McGuire
  * @license   MIT https://opensource.org/licenses/MIT
- * @version   1.4.6
+ * @version   1.4.12
  */
 
 namespace DigitalZenWorks;
