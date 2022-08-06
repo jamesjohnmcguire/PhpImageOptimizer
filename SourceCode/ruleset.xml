@@ -13,7 +13,6 @@
 
 	<!-- Strip the filepaths down to the relevant bit. -->
 	<arg name="basepath" value="./"/>
-
 	<arg name="extensions" value="php"/>
 	<arg name="parallel" value="8"/>
 
