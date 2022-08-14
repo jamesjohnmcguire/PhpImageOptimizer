@@ -92,8 +92,6 @@ DigitalZenWorks\ImageOptimizer::optimize($output_path, 3, 1, 1, 1);
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
@@ -109,6 +107,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@jamesmc](https://twitter.com/jamesmc) - jamesjohnmcguire@gmail.com
+James John McGuire - [@jamesmc](https://twitter.com/jamesmc) - jamesjohnmcguire@gmail.com
 
 Project Link: [https://github.com/jamesjohnmcguire/PhpImageOptimizer](https://github.com/jamesjohnmcguire/PhpImageOptimizer)
