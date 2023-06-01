@@ -14,7 +14,7 @@
 	],
 	"autoload": {
 		"psr-4": {
-			"digitalzenworks\\PhpImageOptimizer\\": "SourceCode/"
+			"DigitalZenWorks\\": "SourceCode/"
 		}
 	},
 	"keywords": [
