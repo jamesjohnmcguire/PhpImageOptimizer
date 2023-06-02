@@ -1100,12 +1100,32 @@ class ImageOptimizer extends \Imagick
 		$result = false;
 
 		// Test if external program is present.
-		$command = escapeshellcmd($program);
+		if (PHP_OS_FAMILY === "Windows")
+		{
+			$redirect = ' >nul 2>nul';
+		}
+		else
+		{
+			$redirect = ' > /dev/null 2>&1';
+
+			// Is this needed?
+			// $redirect = escapeshellcmd($redirect);
+		}
+
+		$command = $program . $redirect;
 		exec($command, $output, $returnResult);
 
-		if ($returnResult === 0)
+		$isArray = is_array($output);
+
+		if ($isArray === true)
 		{
-			$result = true;
+			$empty = empty($output['result']);
+			$exists = array_key_exists('result', $output);
+
+			if ($empty !== false && $exists === true && $output['result'] === true)
+			{
+				$result = $output['result'];
+			}
 		}
 
 		return $result;
