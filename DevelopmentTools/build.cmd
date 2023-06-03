@@ -20,14 +20,14 @@ GOTO end
 
 :release
 ECHO Release
-CD SourceCode
-CALL VersionUpdate ImageOptimizer.php
-cd ..\Tests
-CALL VersionUpdate tests.php
-cd ..
+REM CD SourceCode
+REM CALL VersionUpdate ImageOptimizer.php
+REM CD ..\Tests
+REM CALL VersionUpdate tests.php
+REM CD ..
 
-git add SourceCode\ImageOptimizer.php Tests\tests.php
-git commit -am"Increment version build number" 
+REM git add SourceCode\ImageOptimizer.php Tests\tests.php
+REM git commit -am"Increment version build number" 
 
 REM Currently, not working on windows - phpdocumentor bug
 REM CALL phpdocumentor --setting=graphs.enabled=true -d SourceCode -t Documentation
@@ -35,14 +35,11 @@ REM CALL phpdocumentor --setting=graphs.enabled=true -d SourceCode -t Documentat
 if "%~2"=="" GOTO error1
 if "%~3"=="" GOTO error2
 
-git checkout main
-git merge --no-ff development
-
 git tag %2
 git push --tags
 git push --all
 
-gh release create %2 --notes %3
+gh release create v%2 --notes %2
 
 GOTO end
 
