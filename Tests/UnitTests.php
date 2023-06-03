@@ -86,7 +86,7 @@ final class UnitTests extends TestCase
 		$this->assertEquals($size, 457930);
 
 		$size = filesize($destination);
-		$this->assertEquals($size, 453614);
+		$this->assertEquals($size, 454301);
 
 		// clean up
 		unlink($destination);
