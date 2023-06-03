@@ -1106,9 +1106,6 @@ class ImageOptimizer extends \Imagick
 		else
 		{
 			$redirect = ' > /dev/null 2>&1';
-
-			// Is this needed?
-			// $redirect = escapeshellcmd($redirect);
 		}
 
 		$command = $program . $redirect;
