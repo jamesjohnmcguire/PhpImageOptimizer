@@ -1,3 +1,4 @@
 .phpdoc/cache
 vendor/
 Tests/generated
+/.vscode/launch.json
