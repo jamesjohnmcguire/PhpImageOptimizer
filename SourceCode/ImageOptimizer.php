@@ -964,11 +964,11 @@ class ImageOptimizer extends \Imagick
 				// Taking care of original, if needed.
 				if ($deleteOriginal === true)
 				{
-					@unlink($file);
+					@unlink($output);
 				}
 
-				// Preparing a method of providing result.
-				$destination = strtolower($output);
+				$destination = $output;
+
 				switch ($destination)
 				{
 					case 'browser':
@@ -977,7 +977,6 @@ class ImageOptimizer extends \Imagick
 						$output = null;
 						break;
 					case 'file':
-						$output = $file;
 						break;
 					case 'return':
 						$result = $imageResized;
@@ -1100,7 +1099,7 @@ class ImageOptimizer extends \Imagick
 		$result = false;
 
 		// Test if external program is present.
-		if (PHP_OS_FAMILY === "Windows")
+		if (PHP_OS_FAMILY === 'Windows')
 		{
 			$redirect = ' >nul 2>nul';
 		}
