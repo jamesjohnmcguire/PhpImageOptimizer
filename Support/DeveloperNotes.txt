@@ -6,3 +6,5 @@ Tasks
 	Clean up build script
 	Update rulesets
 	Revisit using VersionUpdate in build script
+	Is this needed? $redirect = escapeshellcmd($redirect);
+	Review and test smartResizeImage	Seems like there is some questionable code in there
