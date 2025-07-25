@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
- * @copyright 2021 - 2023 James John McGuire
+ * @copyright 2021 - 2025 James John McGuire
  */
 declare(strict_types=1);
 
