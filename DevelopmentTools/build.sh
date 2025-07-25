@@ -1,18 +1,21 @@
 #!/bin/bash
+
+cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ..
 
 composer validate --strict
 composer install --prefer-dist
-
 echo composer outdated packages:
-composer outdated
+composer outdated --direct
 
-cd SourceCode
+echo Checking syntax...
+vendor/bin/parallel-lint --exclude .git --exclude .phpdoc --exclude Documentation --exclude Support --exclude vendor .
 
 echo PHP code styles
-../vendor/bin/phpcs -sp --standard=ruleset.xml .
+vendor/bin/phpcs -sp --standard=ruleset.xml .
 
-cd ..
+vendor\bin\phpunit --testdox -c Tests\phpunit.xml Tests\UnitTests.php
+
 # some problem with phpunit on linux? this installation?
 # vendor/bin/phpunit -c Tests/phpunit.xml Tests/UnitTests.php %1 %2
 

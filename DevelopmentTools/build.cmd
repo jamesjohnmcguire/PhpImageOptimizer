@@ -7,12 +7,12 @@ CALL composer install --prefer-dist
 ECHO composer outdated packages:
 CALL composer outdated
 
-CD SourceCode
+echo Checking syntax...
+CALL vendor/bin/parallel-lint --exclude .git --exclude .phpdoc --exclude Documentation --exclude Support --exclude vendor .
 
-ECHO PHP code styles
-CALL ..\vendor\bin\phpcs -sp --standard=ruleset.xml .
+echo PHP code styles
+CALL vendor/bin/phpcs -sp --standard=ruleset.xml .
 
-CD ..
 CALL vendor\bin\phpunit --testdox -c Tests\phpunit.xml Tests\UnitTests.php
 
 if "%1" == "release" GOTO release
