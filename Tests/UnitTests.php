@@ -31,7 +31,7 @@ final class UnitTests extends TestCase
 		$source = "Tests/assets/raster/1xx.jpg";
 		$result = ImageOptimizer::generateWebpFile($source);
 
-		$this->assertEquals($result, false);
+		$this->assertEquals(false, $result);
 	}
 
 	public function testGenerateWebpSuccess()
@@ -39,7 +39,7 @@ final class UnitTests extends TestCase
 		$source = "Tests/assets/raster/1A-1.jpg";
 		$result = ImageOptimizer::generateWebpFile($source);
 
-		$this->assertNotEquals($result, false);
+		$this->assertNotEquals(false, $result);
 
 		$exists = file_exists($result);
 		$this->assertTrue($exists);
@@ -83,10 +83,10 @@ final class UnitTests extends TestCase
 		$this->assertTrue($exists);
 
 		$size = filesize($source);
-		$this->assertEquals($size, 457930);
+		$this->assertEquals(457930, $size);
 
 		$size = filesize($destination);
-		$this->assertEquals($size, 454301);
+		$this->assertEquals(454301, $size);
 
 		// clean up
 		unlink($destination);
@@ -110,7 +110,7 @@ final class UnitTests extends TestCase
 
 		list($width, $height) = getimagesize($destination);
 
-		$this->assertEquals($width, 1280);
+		$this->assertEquals(1280, $width);
 
 		// clean up
 		unlink($destination);
