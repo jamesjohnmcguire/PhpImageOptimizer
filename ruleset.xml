@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="API Tester Coding Standard">
+
+ 	<rule ref="./ruleset.default.xml"/>
+
+</ruleset>

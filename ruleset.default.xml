@@ -1,0 +1,217 @@
+<?xml version="1.0"?>
+<ruleset name="Digital Zen Works Default Standard">
+
+	<arg name="colors"/>
+	<arg name="tab-width" value="4"/>
+
+	<!-- Pass some flags to PHPCS:
+		 p flag: Show progress of the run.
+		 s flag: Show sniff codes in all reports.
+	-->
+	<arg value="ps"/>
+
+	<!-- Strip the filepaths down to the relevant bit. -->
+	<arg name="basepath" value="./"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<!-- Set which version of PHP for compatibility checking. -->
+	<config name="testVersion" value="8.3-"/>
+
+	<description>The set of default code standard rules for Digital Zen Works.</description>
+
+	<exclude-pattern>vendor</exclude-pattern>
+
+	<!-- Check all files in this directory and the directories below it. -->
+	<file>.</file>
+
+	<rule ref="Generic.Files.LineLength">
+		<properties>
+			<property name="lineLimit" value="80"/>
+			<property name="absoluteLineLimit" value="120"/>
+		</properties>
+	</rule>
+
+	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman">
+		<properties>
+			<property name="checkFunctions" value="true" />
+			<property name="checkClosures" value="true" />
+		</properties>
+	</rule>
+
+	<rule ref="Generic">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+		<exclude name="Generic.Classes.OpeningBraceSameLine.BraceOnNewLine"/>
+		<exclude name="Generic.Commenting.DocComment.MissingShort" />
+		<exclude name="Generic.ControlStructures.DisallowYodaConditions.Found"/>
+		<exclude name="Generic.Files.EndFileNoNewline.Found"/>
+		<exclude name="Generic.Files.InlineHTML.Found"/>
+		<exclude name="Generic.Files.LowercasedFilename.NotFound"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+		<exclude name="Generic.Formatting.SpaceAfterCast.NoSpace"/>
+		<exclude name="Generic.Formatting.SpaceAfterNot.Incorrect"/>
+		<exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine"/>
+		<exclude name="Generic.NamingConventions.CamelCapsFunctionName.NotCamelCaps"/>
+		<exclude name="Generic.NamingConventions.CamelCapsFunctionName.ScopeNotCamelCaps"/>
+		<exclude name="Generic.PHP.ClosingPHPTag.NotFound"/>
+		<exclude name="Generic.PHP.UpperCaseConstant.Found"/>
+		<exclude name="Generic.Strings.UnnecessaryStringConcat.Found"/>
+		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed"/>
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent.TabsUsed"/>
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent.NonIndentTabsUsed"/>
+		<exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
+		<exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+		<exclude name="NormalizedArrays.Arrays.CommaAfterLast.MissingMultiLine"/>
+		<!-- Deprecated -->
+		<exclude name="Generic.Debug.ClosureLinter"/>
+		<exclude name="Generic.Debug.CSSLint"/>
+		<exclude name="Generic.Debug.ESLint"/>
+		<exclude name="Generic.Debug.JSHint"/>
+		<exclude name="Generic.Formatting.NoSpaceAfterCast"/>
+		<exclude name="Generic.Functions.CallTimePassByReference"/>
+	</rule>
+
+	<rule ref="PEAR">
+		<exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag"/>
+		<exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag"/>
+		<exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag"/>
+		<exclude name="PEAR.Commenting.ClassComment.MissingLinkTag"/>
+		<exclude name="PEAR.Commenting.ClassComment.MissingPackageTag"/>
+		<exclude name="PEAR.Commenting.FileComment.IncompleteLicense"/>
+		<exclude name="PEAR.Commenting.FileComment.InvalidVersion"/>
+		<exclude name="PEAR.Commenting.FileComment.MissingCategoryTag"/>
+		<exclude name="PEAR.Commenting.FileComment.MissingVersion"/>
+		<exclude name="PEAR.ControlStructures.ControlSignature.Found"/>
+		<exclude name="PEAR.ControlStructures.MultiLineCondition.CloseBracketNewLine"/>
+		<exclude name="PEAR.ControlStructures.MultiLineCondition.NewlineBeforeOpenBrace"/>
+		<exclude name="PEAR.ControlStructures.MultiLineCondition.SpacingAfterOpenBrace"/>
+		<exclude name="PEAR.ControlStructures.MultiLineCondition.StartWithBoolean"/>
+		<exclude name="PEAR.Formatting.MultiLineAssignment.EqualSignLine"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.Indent"/>
+		<exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PEAR.Functions.FunctionDeclaration.CloseBracketLine"/>
+		<exclude name="PEAR.Functions.FunctionDeclaration.NewlineBeforeOpenBrace"/>
+		<exclude name="PEAR.Functions.FunctionDeclaration.SpaceAfterFunction"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNameInvalid"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.FunctionNoCapital"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
+		<exclude name="PEAR.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
+		<exclude name="PEAR.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
+		<exclude name="PEAR.WhiteSpace.ScopeIndent.Incorrect"/>
+		<exclude name="PEAR.WhiteSpace.ScopeIndent.IncorrectExact"/>
+	</rule>
+
+	<rule ref="PHPCompatibility" />
+
+	<rule ref="PSR1">
+		<exclude name="PSR1.Methods.CamelCapsMethodName.NotCamelCaps"/>
+	</rule>
+
+	<rule ref="PSR2">
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+		<exclude name="PSR2.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.CloseBracketLine"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.Indent"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceAfterOpenBracket"/>
+		<exclude name="PSR2.Methods.FunctionCallSignature.SpaceBeforeCloseBracket"/>
+	</rule>
+
+	<rule ref="PSR12">
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.CloseParenthesisLine"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.FirstExpressionLine"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpacingAfterOpenBrace"/>
+		<exclude name="PSR12.ControlStructures.ControlStructureSpacing.SpaceBeforeCloseBrace"/>
+		<exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+		<exclude name="PSR12.Functions.ReturnTypeDeclaration.SpaceBeforeColon"/>
+	</rule>
+
+	<rule ref="Squiz">
+		<exclude name="Squiz.Arrays.ArrayDeclaration.NoComma"/>
+		<exclude name="Squiz.Arrays.ArrayDeclaration.NoCommaAfterLast"/>
+		<exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
+		<exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
+		<exclude name="Squiz.Commenting.FileComment.AuthorTagOrder"/>
+		<exclude name="Squiz.Commenting.FileComment.CopyrightTagOrder"/>
+		<exclude name="Squiz.Commenting.FileComment.IncorrectAuthor"/>
+		<exclude name="Squiz.Commenting.FileComment.IncorrectCopyright"/>
+		<exclude name="Squiz.Commenting.FileComment.MissingSubpackageTag"/>
+		<exclude name="Squiz.Commenting.FileComment.PackageTagOrder"/>
+		<exclude name="Squiz.Commenting.FileComment.SpacingAfterOpen"/>
+		<exclude name="Squiz.Commenting.FileComment.SubpackageTagOrder"/>
+		<exclude name="Squiz.Commenting.LongConditionClosingComment.Invalid"/>
+		<exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
+		<exclude name="Squiz.Commenting.LongConditionClosingComment.SpacingBefore"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseParenthesis"/>
+		<exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterKeyword"/>
+		<exclude name="Squiz.ControlStructures.ElseIfDeclaration.NotAllowed"/>
+		<exclude name="Squiz.ControlStructures.SwitchDeclaration.BreakIndent"/>
+		<exclude name="Squiz.ControlStructures.SwitchDeclaration.SpacingAfterBreak"/>
+		<exclude name="Squiz.Files.FileExtension.ClassFound"/>
+		<exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets"/>
+		<exclude name="Squiz.Functions.FunctionDeclaration.Found"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.CloseBracketLine"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction"/>
+		<exclude name="Squiz.Functions.MultiLineFunctionDeclaration.NewlineBeforeOpenBrace"/>
+		<exclude name="Squiz.NamingConventions.ValidFunctionName.ScopeNotCamelCaps"/>
+		<exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+		<exclude name="Squiz.Operators.ValidLogicalOperators.NotAllowed"/>
+		<exclude name="Squiz.PHP.DisallowBooleanStatement.Found"/>
+		<exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedBool"/>
+		<exclude name="Squiz.PHP.DiscouragedFunctions.Discouraged"/>
+		<exclude name="Squiz.PHP.GlobalKeyword.NotAllowed"/>
+		<exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
+		<exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
+		<exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
+		<exclude name="Squiz.WhiteSpace.FunctionSpacing.After"/>
+		<exclude name="Squiz.WhiteSpace.FunctionSpacing.AfterLast"/>
+		<exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
+		<exclude name="Squiz.WhiteSpace.FunctionSpacing.BeforeFirst"/>
+		<exclude name="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect"/>
+		<exclude name="Squiz.WhiteSpace.OperatorSpacing.SpacingAfter"/>
+		<!-- Deprecated -->
+		<exclude name="Squiz.Classes.DuplicateProperty"/>
+		<exclude name="Squiz.CSS.ClassDefinitionClosingBraceSpace"/>
+		<exclude name="Squiz.CSS.ClassDefinitionNameSpacing"/>
+		<exclude name="Squiz.CSS.ClassDefinitionOpeningBraceSpace"/>
+		<exclude name="Squiz.CSS.ColonSpacing"/>
+		<exclude name="Squiz.CSS.ColourDefinition"/>
+		<exclude name="Squiz.CSS.DisallowMultipleStyleDefinitions"/>
+		<exclude name="Squiz.CSS.DuplicateClassDefinition"/>
+		<exclude name="Squiz.CSS.DuplicateStyleDefinition"/>
+		<exclude name="Squiz.CSS.EmptyClassDefinition"/>
+		<exclude name="Squiz.CSS.EmptyStyleDefinition"/>
+		<exclude name="Squiz.CSS.ForbiddenStyles"/>
+		<exclude name="Squiz.CSS.Indentation"/>
+		<exclude name="Squiz.CSS.LowercaseStyleDefinition"/>
+		<exclude name="Squiz.CSS.MissingColon"/>
+		<exclude name="Squiz.CSS.NamedColours"/>
+		<exclude name="Squiz.CSS.Opacity"/>
+		<exclude name="Squiz.CSS.SemicolonSpacing"/>
+		<exclude name="Squiz.CSS.ShorthandSize"/>
+		<exclude name="Squiz.Debug.JavaScriptLint"/>
+		<exclude name="Squiz.Debug.JSLint"/>
+		<exclude name="Squiz.Objects.DisallowObjectStringIndex"/>
+		<exclude name="Squiz.Objects.ObjectMemberComma"/>
+		<exclude name="Squiz.WhiteSpace.LanguageConstructSpacing"/>
+		<exclude name="Squiz.WhiteSpace.PropertyLabelSpacing"/>
+		<exclude name="Zend.Debug.CodeAnalyzer"/>
+	</rule>
+
+	<rule ref="Universal">
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found"/>
+		<exclude name="Universal.Classes.DisallowFinalClass.FinalClassFound"/>
+		<exclude name="Universal.Classes.RequireFinalClass.NonFinalClassFound"/>
+		<exclude name="Universal.Lists.DisallowShortListSyntax.Found"/>
+		<exclude name="Universal.Namespaces.EnforceCurlyBraceSyntax.Forbidden"/>
+		<exclude name="Universal.Operators.ConcatPosition.Incorrect"/>
+		<exclude name="Universal.Operators.DisallowLogicalAndOr.LogicalOr"/>
+		<exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
+		<exclude name="Universal.Operators.TypeSeparatorSpacing.UnionTypeSpacesAfter"/>
+		<exclude name="Universal.Operators.TypeSeparatorSpacing.UnionTypeSpacesBefore"/>
+		<exclude name="Universal.UseStatements.DisallowUseClass.FoundWithoutAlias"/>
+		<exclude name="Universal.WhiteSpace.DisallowInlineTabs.NonIndentTabsUsed"/>
+		<exclude name="Universal.WhiteSpace.PrecisionAlignment.Found"/>
+	</rule>
+
+</ruleset>
