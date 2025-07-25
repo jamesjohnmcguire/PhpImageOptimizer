@@ -13,6 +13,8 @@ CALL vendor/bin/parallel-lint --exclude .git --exclude .phpdoc --exclude Documen
 echo PHP code styles
 CALL vendor/bin/phpcs -sp --standard=ruleset.xml .
 
+CALL vendor/bin/phpstan.phar analyse
+
 CALL vendor\bin\phpunit --testdox -c Tests\phpunit.xml Tests\UnitTests.php
 
 if "%1" == "release" GOTO release

@@ -1,0 +1,13 @@
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+	bootstrapFiles:
+		- SourceCode/stubs/phpstan-bootstrap.php
+	excludePaths:
+		analyse:
+			- '**/vendor/**'
+	level: 7
+	paths:
+		- SourceCode
+		- Tests

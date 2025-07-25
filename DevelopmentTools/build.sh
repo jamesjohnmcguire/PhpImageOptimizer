@@ -14,7 +14,9 @@ vendor/bin/parallel-lint --exclude .git --exclude .phpdoc --exclude Documentatio
 echo PHP code styles
 vendor/bin/phpcs -sp --standard=ruleset.xml .
 
-vendor\bin\phpunit --testdox -c Tests\phpunit.xml Tests\UnitTests.php
+vendor/bin/phpstan.phar analyse
+
+vendor/bin/phpunit --testdox -c Tests/phpunit.xml Tests/UnitTests.php
 
 # some problem with phpunit on linux? this installation?
 # vendor/bin/phpunit -c Tests/phpunit.xml Tests/UnitTests.php %1 %2
