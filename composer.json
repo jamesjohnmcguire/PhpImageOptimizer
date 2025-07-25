@@ -38,16 +38,22 @@
 		"gumlet/php-image-resize": "^2.0"
 	},
 	"require-dev": {
-		"dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "*",
+		"php-parallel-lint/php-console-highlighter": "^1.0",
 		"php-parallel-lint/php-parallel-lint": "^1.2.0",
 		"phpcompatibility/php-compatibility": "*",
-		"phpstan/phpstan": "^1.0",
-		"phpunit/phpunit": "^10.0",
+		"phpcsstandards/phpcsdevtools": "^1.0",
+		"phpcsstandards/phpcsextra": "^1.2.0",
+		"phpstan/extension-installer": "^1.4",
+		"phpstan/phpstan": "^2.0",
+		"phpstan/phpstan-deprecation-rules": "^2.0",
+		"roave/security-advisories": "dev-master",
 		"squizlabs/php_codesniffer": "*"
 	},
 	"config": {
 		"allow-plugins": {
-			"dealerdirect/phpcodesniffer-composer-installer": true
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
 		}
 	}
 }
