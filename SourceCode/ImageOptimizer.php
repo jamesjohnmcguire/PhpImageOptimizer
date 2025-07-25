@@ -525,6 +525,9 @@ class ImageOptimizer extends \Imagick
 
 			// Create some vars to store output.
 			$output = [];
+			$yml = '';
+			$disableSVGO = '';
+			$command = '';
 			$returnVar = 0;
 
 			// If we’re using imageOptimizer1,
@@ -540,7 +543,7 @@ class ImageOptimizer extends \Imagick
 			}
 
 			// Do the svgo optimizations.
-			$result = self::svgoOptimize($svgo, $isDir);
+			$result = self::svgoOptimize($path, $svgo, $isDir);
 
 			if ($result === false)
 			{
@@ -549,8 +552,6 @@ class ImageOptimizer extends \Imagick
 
 			if(defined('USE_VARIANTS') === true)
 			{
-				$disableSVGO = '';
-
 				if ($svgo < 1)
 				{
 					$disableSVGO = '--no-svgo';
@@ -1024,6 +1025,8 @@ class ImageOptimizer extends \Imagick
 	 * @param integer $height       The height to calcuate to.
 	 * @param integer $sourceWidth  The width of the source image.
 	 * @param integer $sourceHeight The height of the source image.
+	 * @param boolean $proportional Whether the destination dimensions should
+	 *                              keep the original proportions.
 	 *
 	 * @return array An array of destination width and height.
 	 */
@@ -1031,7 +1034,8 @@ class ImageOptimizer extends \Imagick
 		int $width,
 		int $height,
 		int $sourceWidth,
-		int $sourceHeight)
+		int $sourceHeight,
+		bool $proportional = true)
 	{
 		$dimensions = [];
 		$destinationWidth = 0;
