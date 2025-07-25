@@ -47,6 +47,7 @@
 		"phpstan/extension-installer": "^1.4",
 		"phpstan/phpstan": "^2.0",
 		"phpstan/phpstan-deprecation-rules": "^2.0",
+		"phpunit/phpunit": "^10.0",
 		"roave/security-advisories": "dev-master",
 		"squizlabs/php_codesniffer": "*"
 	},
