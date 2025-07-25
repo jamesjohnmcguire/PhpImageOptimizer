@@ -830,22 +830,24 @@ class ImageOptimizer extends \Imagick
 	 *
 	 * Uses PHP GD library functions
 	 *
-	 * @param string  $string         The image data, as a string.
-	 * @param string  $output         Name of the new file. Iinclude path if
-	 *                                needed.
-	 * @param integer $width          New image width.
-	 * @param integer $height         New image height.
-	 * @param boolean $proportional   Keep image proportional, default is false.
-	 * @param integer $quality        Enter 1-100. 100 is best quality.
-	 *                                Default is 100.
-	 * @param boolean $grayscale      If true, image will be grayscale.
-	 *                                Default is false.
-	 * @param boolean $deleteOriginal If true the original file will be deleted.
+	 * @param null|string $string         The image data, as a string.
+	 * @param string      $output         Name of the new file. Iinclude path if
+	 *                                    needed.
+	 * @param integer     $width          New image width.
+	 * @param integer     $height         New image height.
+	 * @param boolean     $proportional   Keep image proportional, default is
+	 *                                    false.
+	 * @param integer     $quality        Enter 1-100. 100 is best quality.
+	 *                                    Default is 100.
+	 * @param boolean     $grayscale      If true, image will be grayscale.
+	 *                                    Default is false.
+	 * @param boolean     $deleteOriginal If true the original file will be
+	 *                                   deleted.
 	 *
 	 * @return boolean|resource
 	 */
 	public static function smartResizeImage(
-		string $string = null,
+		?string $string = null,
 		string $output = 'file',
 		int $width = 0,
 		int $height = 0,
@@ -856,7 +858,7 @@ class ImageOptimizer extends \Imagick
 	{
 		$result = false;
 
-		if (($height > 0 || $width > 0) && $string === null)
+		if (($height > 0 || $width > 0) && $string !== null)
 		{
 			// Setting defaults and meta.
 			$image = '';
