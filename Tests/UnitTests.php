@@ -10,6 +10,8 @@ namespace DigitalZenWorks\PhpImageOptimizer\UnitTests;
 require 'vendor/autoload.php';
 require_once 'SourceCode/ImageOptimizer.php';
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use DigitalZenWorks\ImageOptimizer as ImageOptimizer;
 
@@ -26,6 +28,7 @@ final class UnitTests extends TestCase
 	{
 	}
 
+	#[Test]
 	public function testGenerateWebpFail()
 	{
 		$source = "Tests/assets/raster/1xx.jpg";
@@ -34,6 +37,7 @@ final class UnitTests extends TestCase
 		$this->assertEquals(false, $result);
 	}
 
+	#[Test]
 	public function testGenerateWebpSuccess()
 	{
 		$source = "Tests/assets/raster/1A-1.jpg";
@@ -50,6 +54,7 @@ final class UnitTests extends TestCase
 		}
 	}
 
+	#[Test]
 	public function testImageCopy()
 	{
 		$source = "Tests/assets/raster/1A-1.jpg";
@@ -66,6 +71,7 @@ final class UnitTests extends TestCase
 		unlink($destination);
 	}
 
+	#[Test]
 	public function testImageCopyCheckSizes()
 	{
 		$source = "Tests/assets/raster/TesterImage6.jpg";
@@ -92,6 +98,7 @@ final class UnitTests extends TestCase
 		unlink($destination);
 	}
 
+	#[Test]
 	public function testSimpleSmartResize()
 	{
 		$source = "Tests/assets/raster/TesterImage6.jpg";
