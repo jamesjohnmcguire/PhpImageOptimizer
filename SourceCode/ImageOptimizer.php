@@ -174,6 +174,111 @@ class ImageOptimizer extends \Imagick
 		return $result;
 	}
 
+	private static function getImageOptimCommand($path, $yml, $disableSVGO)
+	{
+			$baseCommand =
+				'image_optim -r ' . $path . ' --config-paths ' . $yml;
+
+			if(defined('USE_VARIANTS') === true)
+			{
+				$baseCommand .= ' ' . $disableSVGO;
+			}
+
+			$command = escapeshellcmd($baseCommand);
+
+			return $command;
+	}
+
+	private static function getImageOptimCommandAgain(
+		$path, $isDir, $dir, $file, $disableSVGO)
+	{
+		if ($isDir === true)
+		{
+			$baseCommand = 'imageoptim -d ' . $path . ' -q';
+		}
+		else
+		{
+			$baseCommand = 'find ' . $dir . ' -name ' . $file;
+		}
+
+		if(defined('USE_VARIANTS') === true)
+		{
+			if ($isDir === true)
+			{
+				$command = $baseCommand . $disableSVGO;
+			}
+			else
+			{
+				$baseCommand = 'find ' . $dir . ' -name ' . $file;
+				$command = $baseCommand . ' | imageoptim ' . $disableSVGO;
+			}
+		}
+
+		$command = escapeshellcmd($baseCommand);
+
+		return $command;
+	}
+
+	private static function ImageOptimIterations(
+		$iterations, $path, $yml, $disableSVGO, &$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$output = null;
+			$command = self::getImageOptimCommand($path, $yml, $disableSVGO);
+
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
+
+	/*
+	* Do the ImageOptim optimizations
+	* ImageOptim can’t handle the path with single quotes,
+	* so we have to strip them
+	* ImageOptim-CLI has an issue where it only works with a directory,
+	* not a single file
+	*/
+	private static function ImageOptimIterationsAgain(
+		$iterations,
+		$path,
+		$yml,
+		$isDir,
+		$dir,
+		$file,
+		$disableSVGO,
+		&$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$command = self::getImageOptimCommandAgain(
+				$path, $isDir, $dir, $file, $disableSVGO);
+
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+				break;
+			}
+		}
+
+		$result = true;
+		return $result;
+	}
+
 	/**
 	 * Checks if the imageoptim program is available on the $PATH.
 	 *
@@ -377,7 +482,8 @@ class ImageOptimizer extends \Imagick
 
 		// If the alpha channel is not defined, make it opaque.
 		$channel = $this->getImageAlphaChannel();
-		if ($channel === \Imagick::ALPHACHANNEL_UNDEFINED)
+
+		if ($channel === false)
 		{
 			if (defined('\Imagick::ALPHACHANNEL_OFF') === true)
 			{
@@ -408,32 +514,15 @@ class ImageOptimizer extends \Imagick
 			}
 		}
 
-		$exists = method_exists($this, 'deleteImageProperty');
-
-		if ($exists === true)
-		{
-			$this->deleteImageProperty('comment');
-			$this->deleteImageProperty('Thumb::URI');
-			$this->deleteImageProperty('Thumb::MTime');
-			$this->deleteImageProperty('Thumb::Size');
-			$this->deleteImageProperty('Thumb::Mimetype');
-			$this->deleteImageProperty('software');
-			$this->deleteImageProperty('Thumb::Image::Width');
-			$this->deleteImageProperty('Thumb::Image::Height');
-			$this->deleteImageProperty('Thumb::Document::Pages');
-		}
-		else
-		{
-			$this->setImageProperty('comment', '');
-			$this->setImageProperty('Thumb::URI', '');
-			$this->setImageProperty('Thumb::MTime', '');
-			$this->setImageProperty('Thumb::Size', '');
-			$this->setImageProperty('Thumb::Mimetype', '');
-			$this->setImageProperty('software', '');
-			$this->setImageProperty('Thumb::Image::Width', '');
-			$this->setImageProperty('Thumb::Image::Height', '');
-			$this->setImageProperty('Thumb::Document::Pages', '');
-		}
+		$this->deleteImageProperty('comment');
+		$this->deleteImageProperty('Thumb::URI');
+		$this->deleteImageProperty('Thumb::MTime');
+		$this->deleteImageProperty('Thumb::Size');
+		$this->deleteImageProperty('Thumb::Mimetype');
+		$this->deleteImageProperty('software');
+		$this->deleteImageProperty('Thumb::Image::Width');
+		$this->deleteImageProperty('Thumb::Image::Height');
+		$this->deleteImageProperty('Thumb::Document::Pages');
 
 		// In case user wants to fill use extent for it rather than creating a
 		// new canvas …fill out the bounding box.
@@ -478,21 +567,21 @@ class ImageOptimizer extends \Imagick
 	 *                                 should be optimized.
 	 * @param integer $svgo            The number of times to optimize using
 	 *                                 SVGO.
-	 * @param integer $imageOptimizer1 The number of times to optimize using
+	 * @param integer $imageOptimIterations The number of times to optimize using
 	 *                                 image_optim.
-	 * @param integer $picopt          The number of times to optimize using
+	 * @param integer $picOptIterations          The number of times to optimize using
 	 *                                 picopt.
 	 * @param integer $imageOptim      The number of times to optimize using
 	 *                                 ImageOptim.
 	 *
-	 * @return string $output
+	 * @return boolean|string $output
 	 */
 	public static function optimize(
 		string $path,
 		int $svgo = 0,
-		int $imageOptimizer1 = 0,
-		int $picopt = 0,
-		int $imageOptim = 0) : string
+		int $imageOptimIterations = 0,
+		int $picOptIterations = 0,
+		int $imageOptim = 0) : bool|string
 	{
 		$output = false;
 
@@ -501,6 +590,8 @@ class ImageOptimizer extends \Imagick
 
 		if ($exists === true)
 		{
+			$dir = null;
+			$file = null;
 			$isDir = is_dir($path);
 
 			if ($isDir === false)
@@ -519,8 +610,8 @@ class ImageOptimizer extends \Imagick
 
 			// Make sure we got some ints up in here.
 			$svgo = (int) $svgo;
-			$imageOptimizer1 = (int) $imageOptimizer1;
-			$picopt = (int) $picopt;
+			$imageOptimIterations = (int) $imageOptimIterations;
+			$picOptIterations = (int) $picOptIterations;
 			$imageOptim = (int) $imageOptim;
 
 			// Create some vars to store output.
@@ -530,9 +621,9 @@ class ImageOptimizer extends \Imagick
 			$command = '';
 			$returnVar = 0;
 
-			// If we’re using imageOptimizer1,
+			// If we’re using imageOptimIterations,
 			// need to create the YAML config file.
-			if ($imageOptimizer1 > 0)
+			if ($imageOptimIterations > 0)
 			{
 				$contents = "verbose: true\njpegtran:\n  progressive: false\n" .
 					"optipng:\n  level: 7\n  interlace: false\npngcrush:\n  " .
@@ -558,92 +649,47 @@ class ImageOptimizer extends \Imagick
 				}
 			}
 
-			// Do the imageOptimizer1 optimizations.
-			for ($i = 0; $i < $imageOptimizer1; $i++)
-			{
-				$baseCommand =
-					'image_optim -r ' . $path . ' --config-paths ' . $yml;
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					$baseCommand .= ' ' . $disableSVGO;
-				}
-
-				$command = escapeshellcmd($baseCommand);
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
+			// Do the imageOptimIterations optimizations.
+			self::ImageOptimIterations(
+				$imageOptimIterations, $path, $yml, $disableSVGO, $returnVar);
 
 			// Do the picopt optimizations.
-			for ($i = 0; $i < $picopt; $i++)
-			{
-				$command = escapeshellcmd('picopt -r ' . $path);
-				exec($command, $output, $returnVar);
+			self::picOptIterations($picOptIterations, $path, $yml, $returnVar);
 
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
-
-			/*
-			 * Do the ImageOptim optimizations
-			 * ImageOptim can’t handle the path with single quotes,
-			 * so we have to strip them
-			 * ImageOptim-CLI has an issue where it only works with a directory,
-			 * not a single file
-			 */
-			for ($i = 0; $i < $imageOptim; $i++)
-			{
-				if ($isDir === true)
-				{
-					$baseCommand = 'imageoptim -d ' . $path . ' -q';
-				}
-				else
-				{
-					$baseCommand = 'find ' . $dir . ' -name ' . $file;
-				}
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					if ($isDir === true)
-					{
-						$baseCommand .= $disableSVGO;
-					}
-					else
-					{
-						$baseCommand = 'find ' . $dir . ' -name ' . $file;
-						$command .= ' | imageoptim ' . $disableSVGO;
-					}
-				}
-
-				$command = escapeshellcmd($baseCommand);
-
-				if(defined('USE_VARIANTS') === true)
-				{
-					if ($isDir === false)
-					{
-						$command .= $disableSVGO;
-					}
-				}
-
-				exec($command, $output, $returnVar);
-
-				if ($returnVar !== 0)
-				{
-					unlink($yml);
-					return false;
-				}
-			}
+			self::ImageOptimIterationsAgain(
+				$imageOptim,
+				$path,
+				$yml,
+				$isDir,
+				$dir,
+				$file,
+				$disableSVGO,
+				$returnVar);
 		}
 
 		return $output;
+	}
+
+	private static function picOptIterations(
+		$iterations, $path, $yml, &$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$command = escapeshellcmd('picopt -r ' . $path);
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+				break;
+			}
+		}
+
+		$result = true;
+		return $result;
 	}
 
 	/**
@@ -900,7 +946,7 @@ class ImageOptimizer extends \Imagick
 			// Loading image to memory according to type.
 			$image = imagecreatefromstring($string);
 
-			if ($image !== null)
+			if ($image !== false)
 			{
 				// Make the image grayscale, if needed.
 				if ($grayscale === true)
@@ -1117,17 +1163,9 @@ class ImageOptimizer extends \Imagick
 		$command = $program . $redirect;
 		exec($command, $output, $returnResult);
 
-		$isArray = is_array($output);
-
-		if ($isArray === true)
+		if ($returnResult === 0)
 		{
-			$empty = empty($output['result']);
-			$exists = array_key_exists('result', $output);
-
-			if ($empty !== false && $exists === true && $output['result'] === true)
-			{
-				$result = $output['result'];
-			}
+			$result = true;
 		}
 
 		return $result;
