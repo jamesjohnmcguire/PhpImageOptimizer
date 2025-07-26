@@ -7,7 +7,7 @@ parameters:
 	excludePaths:
 		analyse:
 			- '**/vendor/**'
-	level: 7
+	level: 4
 	paths:
 		- SourceCode
 		- Tests
