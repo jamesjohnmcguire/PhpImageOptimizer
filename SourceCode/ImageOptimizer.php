@@ -7,7 +7,7 @@
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
  * @copyright 2021 - 2025 James John McGuire
  * @license   MIT https://opensource.org/licenses/MIT
- * @version   1.5.24
+ * @version   1.5.25
  * @link      https://github.com/DigitalZenWorks/PhpImageOptimizer
  */
 
