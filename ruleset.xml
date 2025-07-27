@@ -3,4 +3,8 @@
 
  	<rule ref="./ruleset.default.xml"/>
 
+	<rule ref="Squiz">
+		<exclude name="Squiz.Commenting.FileComment.DuplicateAuthorTag"/>
+	</rule>
+
 </ruleset>
