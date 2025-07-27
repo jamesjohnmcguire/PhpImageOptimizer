@@ -8,7 +8,10 @@
  * @copyright 2021 - 2025 James John McGuire
  * @license   MIT https://opensource.org/licenses/MIT
  * @version   1.5.16
+ * @link      https://github.com/DigitalZenWorks/PhpImageOptimizer
  */
+
+declare(strict_types=1);
 
 namespace DigitalZenWorks;
 
@@ -55,17 +58,17 @@ class ImageOptimizer extends \Imagick
 			if ($width > 0 && $height === 0)
 			{
 				$image->resizeToWidth($width);
-			};
+			}
 
 			if ($height > 0 && $width === 0)
 			{
 				$image->resizeToHeight($height);
-			};
+			}
 
 			if ($width > 0 && $height > 0)
 			{
 				$image->resizeToBestFit($width, $height);
-			};
+			}
 
 			$image->save($destination);
 
@@ -129,7 +132,7 @@ class ImageOptimizer extends \Imagick
 					$image->writeImage($outputFile);
 					$result = $outputFile;
 				}
-			 	else
+				else
 				{
 					$exists = function_exists('imagewebp');
 
@@ -171,111 +174,6 @@ class ImageOptimizer extends \Imagick
 			}
 		}
 
-		return $result;
-	}
-
-	private static function getImageOptimCommand($path, $yml, $disableSVGO)
-	{
-			$baseCommand =
-				'image_optim -r ' . $path . ' --config-paths ' . $yml;
-
-			if(defined('USE_VARIANTS') === true)
-			{
-				$baseCommand .= ' ' . $disableSVGO;
-			}
-
-			$command = escapeshellcmd($baseCommand);
-
-			return $command;
-	}
-
-	private static function getImageOptimCommandAgain(
-		$path, $isDir, $dir, $file, $disableSVGO)
-	{
-		if ($isDir === true)
-		{
-			$baseCommand = 'imageoptim -d ' . $path . ' -q';
-		}
-		else
-		{
-			$baseCommand = 'find ' . $dir . ' -name ' . $file;
-		}
-
-		if(defined('USE_VARIANTS') === true)
-		{
-			if ($isDir === true)
-			{
-				$command = $baseCommand . $disableSVGO;
-			}
-			else
-			{
-				$baseCommand = 'find ' . $dir . ' -name ' . $file;
-				$command = $baseCommand . ' | imageoptim ' . $disableSVGO;
-			}
-		}
-
-		$command = escapeshellcmd($baseCommand);
-
-		return $command;
-	}
-
-	private static function ImageOptimIterations(
-		$iterations, $path, $yml, $disableSVGO, &$returnVar)
-	{
-		$result = false;
-
-		for ($index = 0; $index < $iterations; $index++)
-		{
-			$output = null;
-			$command = self::getImageOptimCommand($path, $yml, $disableSVGO);
-
-			exec($command, $output, $returnVar);
-
-			if ($returnVar !== 0)
-			{
-				unlink($yml);
-				$result = false;
-			}
-		}
-
-		return $result;
-	}
-
-	/*
-	* Do the ImageOptim optimizations
-	* ImageOptim can’t handle the path with single quotes,
-	* so we have to strip them
-	* ImageOptim-CLI has an issue where it only works with a directory,
-	* not a single file
-	*/
-	private static function ImageOptimIterationsAgain(
-		$iterations,
-		$path,
-		$yml,
-		$isDir,
-		$dir,
-		$file,
-		$disableSVGO,
-		&$returnVar)
-	{
-		$result = false;
-
-		for ($index = 0; $index < $iterations; $index++)
-		{
-			$command = self::getImageOptimCommandAgain(
-				$path, $isDir, $dir, $file, $disableSVGO);
-
-			exec($command, $output, $returnVar);
-
-			if ($returnVar !== 0)
-			{
-				unlink($yml);
-				$result = false;
-				break;
-			}
-		}
-
-		$result = true;
 		return $result;
 	}
 
@@ -463,6 +361,9 @@ class ImageOptimizer extends \Imagick
 		// then just use the resize function.
 		if (($widthFactor * $heightFactor) > 0.1)
 		{
+			$newWidth = (int)$newWidth;
+			$newHeight = (int)$newHeight;
+
 			$this->resizeImage($newWidth, $newHeight, $filter, 1);
 		}
 		// If we’d be using sample to scale to smaller than 128x128, use resize.
@@ -476,7 +377,13 @@ class ImageOptimizer extends \Imagick
 		{
 			$temporaryWidth = ($sampleFactor * $newWidth);
 			$temporaryHeight = ($sampleFactor * $newHeight);
+
+			$temporaryWidth = (int)$temporaryWidth;
+			$temporaryHeight = (int)$temporaryHeight;
 			$this->sampleImage($temporaryWidth, $temporaryHeight);
+
+			$newWidth = (int)$newWidth;
+			$newHeight = (int)$newHeight;
 			$this->resizeImage($newWidth, $newHeight, $filter, 1);
 		}
 
@@ -563,16 +470,16 @@ class ImageOptimizer extends \Imagick
 	 * Note that these are executed using PHP’s `exec` command, so there may be
 	 * security implications.
 	 *
-	 * @param string  $path            The path to the file or directory that
-	 *                                 should be optimized.
-	 * @param integer $svgo            The number of times to optimize using
-	 *                                 SVGO.
-	 * @param integer $imageOptimIterations The number of times to optimize using
-	 *                                 image_optim.
-	 * @param integer $picOptIterations          The number of times to optimize using
-	 *                                 picopt.
-	 * @param integer $imageOptim      The number of times to optimize using
-	 *                                 ImageOptim.
+	 * @param string  $path                 The path to the file or directory
+	 *                                      that should be optimized.
+	 * @param integer $svgo                 The number of times to optimize
+	 *                                      using SVGO.
+	 * @param integer $imageOptimIterations The number of times to optimize
+	 *                                      using image_optim.
+	 * @param integer $picOptIterations     The number of times to optimize
+	 *                                      using picopt.
+	 * @param integer $imageOptim           The number of times to optimize
+	 *                                      using ImageOptim.
 	 *
 	 * @return boolean|string $output
 	 */
@@ -651,7 +558,11 @@ class ImageOptimizer extends \Imagick
 
 			// Do the imageOptimIterations optimizations.
 			self::ImageOptimIterations(
-				$imageOptimIterations, $path, $yml, $disableSVGO, $returnVar);
+				$imageOptimIterations,
+				$path,
+				$yml,
+				$disableSVGO,
+				$returnVar);
 
 			// Do the picopt optimizations.
 			self::picOptIterations($picOptIterations, $path, $yml, $returnVar);
@@ -668,28 +579,6 @@ class ImageOptimizer extends \Imagick
 		}
 
 		return $output;
-	}
-
-	private static function picOptIterations(
-		$iterations, $path, $yml, &$returnVar)
-	{
-		$result = false;
-
-		for ($index = 0; $index < $iterations; $index++)
-		{
-			$command = escapeshellcmd('picopt -r ' . $path);
-			exec($command, $output, $returnVar);
-
-			if ($returnVar !== 0)
-			{
-				unlink($yml);
-				$result = false;
-				break;
-			}
-		}
-
-		$result = true;
-		return $result;
 	}
 
 	/**
@@ -721,11 +610,11 @@ class ImageOptimizer extends \Imagick
 	 * @param boolean $optim   Whether you intend to perform optimization
 	 *                         on the resulting image. Note that setting this to
 	 *                         `true` doesn’t actually perform any optimization.
-     * @param integer $filter  The filter to use when generating
+	 * @param integer $filter  The filter to use when generating
 	 *                         thumbnail image.
-     * @param boolean $bestfit Treat $columns and $rows as a bounding box
+	 * @param boolean $bestfit Treat $columns and $rows as a bounding box
 	 *                         in which to fit the image.
-     * @param boolean $crop    Whether you want to crop the image.
+	 * @param boolean $crop    Whether you want to crop the image.
 	 *
 	 * @return void
 	 */
@@ -877,7 +766,7 @@ class ImageOptimizer extends \Imagick
 	 *
 	 * Uses PHP GD library functions
 	 *
-	 * @param null|string $string         The image data, as a string.
+	 * @param null|string $imageDataText  The image data, as a string.
 	 * @param string      $output         Name of the new file. Iinclude path if
 	 *                                    needed.
 	 * @param integer     $width          New image width.
@@ -889,12 +778,12 @@ class ImageOptimizer extends \Imagick
 	 * @param boolean     $grayscale      If true, image will be grayscale.
 	 *                                    Default is false.
 	 * @param boolean     $deleteOriginal If true the original file will be
-	 *                                   deleted.
+	 *                                    deleted.
 	 *
 	 * @return boolean|resource
 	 */
 	public static function smartResizeImage(
-		?string $string = null,
+		?string $imageDataText = null,
 		string $output = 'file',
 		int $width = 0,
 		int $height = 0,
@@ -905,14 +794,14 @@ class ImageOptimizer extends \Imagick
 	{
 		$result = false;
 
-		if (($height > 0 || $width > 0) && $string !== null)
+		if (($height > 0 || $width > 0) && $imageDataText !== null)
 		{
 			// Setting defaults and meta.
 			$image = '';
 
-			$info = getimagesizefromstring($string);
+			$info = getimagesizefromstring($imageDataText);
 
-			list($sourceWidth, $sourceHeight, $imageType) = $info;
+			[$sourceWidth, $sourceHeight, $imageType] = $info;
 
 			$destinationDimensions = self::calculateDestinationDimensions(
 				$width,
@@ -920,8 +809,7 @@ class ImageOptimizer extends \Imagick
 				$sourceWidth,
 				$sourceHeight);
 
-			list($destinationWidth, $destinationHeight) =
-				 $destinationDimensions;
+			[$destinationWidth, $destinationHeight] = $destinationDimensions;
 
 			$cropWidth = 0;
 			$cropHeight = 0;
@@ -944,7 +832,7 @@ class ImageOptimizer extends \Imagick
 			}
 
 			// Loading image to memory according to type.
-			$image = imagecreatefromstring($string);
+			$image = imagecreatefromstring($imageDataText);
 
 			if ($image !== false)
 			{
@@ -962,41 +850,14 @@ class ImageOptimizer extends \Imagick
 				if ($imageType === IMAGETYPE_GIF ||
 					$imageType === IMAGETYPE_PNG)
 				{
-					$transparency = imagecolortransparent($image);
-					$palletsize = imagecolorstotal($image);
-
-					if ($transparency >= 0 && $transparency < $palletsize)
-					{
-						$transparentColor =
-							imagecolorsforindex($image, $transparency);
-						$transparency = imagecolorallocate(
-							$imageResized,
-							$transparentColor['red'],
-							$transparentColor['green'],
-							$transparentColor['blue']);
-
-						imagefill($imageResized, 0, 0, $transparency);
-						imagecolortransparent($imageResized, $transparency);
-					}
-					elseif ($imageType === IMAGETYPE_PNG)
-					{
-						imagealphablending($imageResized, false);
-						$color = imagecolorallocatealpha(
-							$imageResized,
-							0,
-							0,
-							0,
-							127);
-
-						imagefill($imageResized, 0, 0, $color);
-						imagesavealpha($imageResized, true);
-					}
+					$result = self::imageFillTransparency(
+						$image,
+						$imageResized,
+						$imageType);
 				}
 
 				$sourceWidth = (2 * $cropWidth);
-				$sourceWidth = ($sourceWidth - $sourceWidth);
 				$sourceHeight = (2 * $cropHeight);
-				$sourceHeight = ($sourceHeight - $sourceHeight);
 
 				imagecopyresampled(
 					$imageResized,
@@ -1013,7 +874,7 @@ class ImageOptimizer extends \Imagick
 				// Taking care of original, if needed.
 				if ($deleteOriginal === true)
 				{
-					@unlink($output);
+					unlink($output);
 				}
 
 				$destination = $output;
@@ -1025,43 +886,49 @@ class ImageOptimizer extends \Imagick
 						header("Content-type: $mime");
 						$output = null;
 						break;
-					case 'file':
-						break;
 					case 'return':
 						$result = $imageResized;
 						break;
+					case 'file':
 					default:
 						// Nothing to be done.
 						break;
 				}
 
-				// Writing image according to type to the output destination
-				// and image quality.
-				switch ($imageType)
-				{
-					case IMAGETYPE_GIF:
-						imagegif($imageResized, $output);
-						break;
-					case IMAGETYPE_JPEG:
-						imagejpeg($imageResized, $output, $quality);
-						break;
-					case IMAGETYPE_PNG:
-						$quality = (0.9 * $quality);
-						$quality = ($quality / 10.0);
-						$quality = (int) $quality;
-						$quality = (9 - $quality);
-						imagepng($imageResized, $output, $quality);
-						break;
-					default:
-						// Nothing to be done.
-						break;
-				}
+				self::saveResizedImage(
+					$imageResized,
+					$imageType,
+					$output,
+					$quality);
 
 				$result = true;
 			}
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Adjusts PNG quality value for GD imagepng function.
+	 *
+	 * Converts a 1-100 quality scale to the 0-9 scale required by imagepng.
+	 * Higher input quality results in lower compression (higher output
+	 * quality).
+	 *
+	 * @param integer $quality Quality value from 1 (lowest) to 100 (highest).
+	 *
+	 * @return integer PNG compression level for imagepng (0 = no compression,
+	 *             9 = max compression).
+	 */
+	private static function adjustPngQuality(
+		int $quality)
+	{
+		$quality = (0.9 * $quality);
+		$quality = ($quality / 10.0);
+		$quality = (int) $quality;
+		$quality = (9 - $quality);
+
+		return $quality;
 	}
 
 	/**
@@ -1139,6 +1006,259 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
+	 * Builds the image_optim command string.
+	 *
+	 * Constructs the command line string for running image_optim with the
+	 * specified path, YAML configuration file, and optional SVGO disable flag.
+	 *
+	 * @param string $path        The path to the file or directory to optimize.
+	 * @param string $yml         The path to the YAML configuration file.
+	 * @param string $disableSVGO Optional flag to disable SVGO processing.
+	 *
+	 * @return string The escaped command string for image_optim.
+	 */
+	private static function getImageOptimCommand(
+		string $path,
+		string $yml,
+		string $disableSVGO)
+	{
+			$baseCommand =
+				'image_optim -r ' . $path . ' --config-paths ' . $yml;
+
+			if(defined('USE_VARIANTS') === true)
+			{
+				$baseCommand .= ' ' . $disableSVGO;
+			}
+
+			$command = escapeshellcmd($baseCommand);
+
+			return $command;
+	}
+
+	/**
+	 * Builds the ImageOptim command string for alternative processing.
+	 *
+	 * Constructs the command line string for running ImageOptim with different
+	 * parameters based on whether the path is a directory or file. This method
+	 * handles the alternative ImageOptim command structure.
+	 *
+	 * @param string  $path        The path to the file or directory to
+	 *                             optimize.
+	 * @param boolean $isDir       Whether the path is a directory (true) or
+	 *                             file (false).
+	 * @param string  $dir         The directory path (used when processing
+	 *                             single files).
+	 * @param string  $file        The filename (used when processing single
+	 *                             files).
+	 * @param string  $disableSVGO Optional flag to disable SVGO processing.
+	 *
+	 * @return string The escaped command string for ImageOptim.
+	 */
+	private static function getImageOptimCommandAgain(
+		string $path,
+		bool $isDir,
+		string $dir,
+		string $file,
+		string $disableSVGO)
+	{
+		if ($isDir === true)
+		{
+			$baseCommand = 'imageoptim -d ' . $path . ' -q';
+		}
+		else
+		{
+			$baseCommand = 'find ' . $dir . ' -name ' . $file;
+		}
+
+		if(defined('USE_VARIANTS') === true)
+		{
+			if ($isDir === true)
+			{
+				$command = $baseCommand . $disableSVGO;
+			}
+			else
+			{
+				$baseCommand = 'find ' . $dir . ' -name ' . $file;
+				$command = $baseCommand . ' | imageoptim ' . $disableSVGO;
+			}
+		}
+
+		$command = escapeshellcmd($baseCommand);
+
+		return $command;
+	}
+
+	/**
+	 * Fills a resized image with transparency for GIF and PNG formats.
+	 *
+	 * For GIF, copies the transparent color from the source image. For PNG,
+	 * sets alpha blending and fills with transparent color.
+	 *
+	 * @param \GdImage $image        The source image resource.
+	 * @param \GdImage $imageResized The destination (resized) image resource.
+	 * @param integer  $imageType    The image type constant (IMAGETYPE_GIF,
+	 *                               IMAGETYPE_PNG, etc.).
+	 *
+	 * @return boolean True if transparency was filled successfully,
+	 *                 false otherwise.
+	 */
+	private static function imageFillTransparency(
+		\GdImage $image,
+		\GdImage $imageResized,
+		int $imageType): bool
+	{
+		$result = false;
+
+		$transparency = imagecolortransparent($image);
+		$palletsize = imagecolorstotal($image);
+
+		if ($transparency >= 0 && $transparency < $palletsize)
+		{
+				$transparentColor =
+						imagecolorsforindex($image, $transparency);
+				$transparency = imagecolorallocate(
+						$imageResized,
+						$transparentColor['red'],
+						$transparentColor['green'],
+						$transparentColor['blue']);
+
+				$result = imagefill($imageResized, 0, 0, $transparency);
+
+				if ($result === true)
+				{
+						$output = imagecolortransparent($imageResized, $transparency);
+
+						if ($output > -1)
+						{
+								$result = true;
+						}
+				}
+		}
+		elseif ($imageType === IMAGETYPE_PNG)
+		{
+				imagealphablending($imageResized, false);
+				$color = imagecolorallocatealpha(
+						$imageResized,
+						0,
+						0,
+						0,
+						127);
+
+				$result = imagefill($imageResized, 0, 0, $color);
+
+				if ($result === true)
+				{
+						$result = imagesavealpha($imageResized, true);
+				}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Executes multiple iterations of image_optim processing.
+	 *
+	 * Runs the image_optim command multiple times as specified by the iterations
+	 * parameter. If any iteration fails, the process stops and returns false.
+	 *
+	 * @param integer $iterations  The number of times to run image_optim.
+	 * @param string  $path        The path to the file or directory to
+	 *                             optimize.
+	 * @param string  $yml         The path to the YAML configuration file.
+	 * @param string  $disableSVGO Optional flag to disable SVGO processing.
+	 * @param integer $returnVar   Reference to store the return code from exec.
+	 *
+	 * @return boolean Returns true if all iterations succeed, false otherwise.
+	 */
+	private static function ImageOptimIterations(
+		int $iterations,
+		string $path,
+		string $yml,
+		string $disableSVGO,
+		int &$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$output = null;
+			$command = self::getImageOptimCommand($path, $yml, $disableSVGO);
+
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Executes multiple iterations of image_optim processing, in a variant way.
+	 *
+	 * Runs the image_optim command multiple times as specified by the
+	 * iterations parameter. If any iteration fails, the process stops and
+	 * returns false.
+
+	 * ImageOptim can’t handle the path with single quotes,
+	 * so we have to strip them
+	 * ImageOptim-CLI has an issue where it only works with a directory,
+	 * not a single file
+	 *
+	 * @param integer $iterations  The number of times to run image_optim.
+	 * @param string  $path        The path to the file or directory to
+	 *                             optimize.
+	 * @param string  $yml         The path to the YAML configuration file.
+	 * @param boolean $isDir       Indicates that the given path is a directory
+	 *                             or a file.
+	 * @param string  $dir         The directory path (used when processing
+	 *                             single files).
+	 * @param string  $file        The filename (used when processing single
+	 *                             files).
+	 * @param string  $disableSVGO Optional flag to disable SVGO processing.
+	 * @param integer $returnVar   Reference to store the return code from exec.
+	 *
+	 * @return boolean Returns true if all iterations succeed, false otherwise.
+	 */
+	private static function ImageOptimIterationsAgain(
+		int $iterations,
+		string $path,
+		string $yml,
+		bool $isDir,
+		string $dir,
+		string $file,
+		string $disableSVGO,
+		int &$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$command = self::getImageOptimCommandAgain(
+				$path,
+				$isDir,
+				$dir,
+				$file,
+				$disableSVGO);
+
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+				break;
+			}
+		}
+
+		$result = true;
+		return $result;
+	}
+
+	/**
 	 * Checks if the external program is available on the $PATH.
 	 *
 	 * @param string $program The name of the program to check for.
@@ -1172,6 +1292,44 @@ class ImageOptimizer extends \Imagick
 	}
 
 	/**
+	 * Executes multiple iterations of picopt processing.
+	 *
+	 * Runs the picopt command multiple times as specified by the iterations
+	 * parameter. If any iteration fails, the process stops and returns false.
+	 *
+	 * @param integer $iterations The number of times to run picopt.
+	 * @param string  $path       The path to the file or directory to optimize.
+	 * @param string  $yml        The path to the YAML configuration file.
+	 * @param integer $returnVar  Reference to store the return code from exec.
+	 *
+	 * @return boolean Returns true if all iterations succeed, false otherwise.
+	 */
+	private static function picOptIterations(
+		int $iterations,
+		string $path,
+		string $yml,
+		int &$returnVar)
+	{
+		$result = false;
+
+		for ($index = 0; $index < $iterations; $index++)
+		{
+			$command = escapeshellcmd('picopt -r ' . $path);
+			exec($command, $output, $returnVar);
+
+			if ($returnVar !== 0)
+			{
+				unlink($yml);
+				$result = false;
+				break;
+			}
+		}
+
+		$result = true;
+		return $result;
+	}
+
+	/**
 	 * Replace file extension.
 	 *
 	 * @param string $fileName     Path to file in question.
@@ -1188,6 +1346,50 @@ class ImageOptimizer extends \Imagick
 		$newName = $info['dirname'] . '/' . $info['filename'] . $newExtension;
 
 		return $newName;
+	}
+
+	/**
+	 * Saves a resized image to the specified output using the correct format
+	 * and quality.
+	 *
+	 * Handles GIF, JPEG, and PNG formats. For PNG, adjusts quality to match
+	 * GD's scale.
+	 *
+	 * @param boolean|\GdImage $imageResized The resized image resource
+	 *                                       (PHP 8+ GdImage).
+	 * @param integer          $imageType    The image type constant
+	 *                                       (IMAGETYPE_GIF, IMAGETYPE_JPEG,
+	 *                                       IMAGETYPE_PNG).
+	 * @param string           $output       The output file path.
+	 * @param integer          $quality      The quality value (1-100 for JPEG,
+	 *                                       mapped for PNG).
+	 *
+	 * @return void
+	 */
+	private static function saveResizedImage(
+		bool|\GdImage $imageResized,
+		int $imageType,
+		string $output,
+		int $quality) : void
+	{
+		// Writing image according to type to the output destination
+		// and image quality.
+		switch ($imageType)
+		{
+			case IMAGETYPE_GIF:
+				imagegif($imageResized, $output);
+				break;
+			case IMAGETYPE_JPEG:
+				imagejpeg($imageResized, $output, $quality);
+				break;
+			case IMAGETYPE_PNG:
+				$quality = self::adjustPngQuality($quality);
+				imagepng($imageResized, $output, $quality);
+				break;
+			default:
+				// Nothing to be done.
+				break;
+		}
 	}
 
 	/**
