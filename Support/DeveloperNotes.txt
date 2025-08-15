@@ -8,3 +8,9 @@ Tasks
 	Revisit using VersionUpdate in build script
 	Is this needed? $redirect = escapeshellcmd($redirect);
 	Review and test smartResizeImage	Seems like there is some questionable code in there
+	Message: DigitalZenWorks\ImageOptimizer::smartResizeImage(): Implicitly marking parameter $string as nullable is deprecated, the explicit nullable type must be used instead	Filename: SourceCode/ImageOptimizer.php	Line Number: 847
+	PHPStan	In ByteString.php line 370:  Invalid "UTF-8" string.
+Packagist
+	https://stackoverflow.com/questions/74982898/how-to-remove-packagist-org-tag-ignored-warning-message
+
+	https://packagist.org/packages/digitalzenworks/php-image-optimizer
