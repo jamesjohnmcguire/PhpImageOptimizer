@@ -4,7 +4,7 @@
  *
  * @package   NotarizationApplicationPlugIn
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
- * @copyright 2017 - 2025 James John McGuire <jamesjohnmcguire@gmail.com>
+ * @copyright 2017 - 2026 James John McGuire <jamesjohnmcguire@gmail.com>
  * @license   MIT
  * @link      https://jamesjohnmcguire@bitbucket.org/jamesjohnmcguire/notaryformplugin
  */

@@ -3,7 +3,7 @@
  * @package   PhpImageOptimizer
  * @author    David Newton <david@davidnewton.ca>
  * @author    James John McGuire <jamesjohnmcguire@gmail.com>
- * @copyright 2021 - 2025 James John McGuire
+ * @copyright 2021 - 2026 James John McGuire
  * @license   https://opensource.org/licenses/MIT MIT License
  * @version   1.5.25
  * @link      https://github.com/DigitalZenWorks/PhpImageOptimizer
