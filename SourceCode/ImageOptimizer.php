@@ -297,8 +297,8 @@ class ImageOptimizer extends \Imagick
 		];
 
 		// Parse parameters given to function.
-		$columns = (double) ($columns);
-		$rows = (double) ($rows);
+		$columns = (float) ($columns);
+		$rows = (float) ($rows);
 		$bestfit = (bool) $bestfit;
 		$fill = (bool) $fill;
 
@@ -317,8 +317,8 @@ class ImageOptimizer extends \Imagick
 		}
 
 		// Figure out the output width and height.
-		$width = (double) $this->getImageWidth();
-		$height = (double) $this->getImageHeight();
+		$width = (float) $this->getImageWidth();
+		$height = (float) $this->getImageHeight();
 		$newWidth = $columns;
 		$newHeight = $rows;
 
