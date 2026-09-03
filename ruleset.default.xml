@@ -209,6 +209,7 @@
 		<exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
 		<exclude name="Universal.Operators.TypeSeparatorSpacing.UnionTypeSpacesAfter"/>
 		<exclude name="Universal.Operators.TypeSeparatorSpacing.UnionTypeSpacesBefore"/>
+		<exclude name="Universal.PHP.RequireExitDieParentheses.Missing"/>
 		<exclude name="Universal.UseStatements.DisallowUseClass.FoundWithoutAlias"/>
 		<exclude name="Universal.WhiteSpace.DisallowInlineTabs.NonIndentTabsUsed"/>
 		<exclude name="Universal.WhiteSpace.PrecisionAlignment.Found"/>

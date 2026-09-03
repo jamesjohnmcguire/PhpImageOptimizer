@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
-<ruleset name="API Tester Coding Standard">
+<ruleset name="PHP Image Optimizer Coding Standard"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<config name="testVersion" value="7.4-"/>
 
  	<rule ref="./ruleset.default.xml"/>
-
-	<rule ref="Squiz">
-		<exclude name="Squiz.Commenting.FileComment.DuplicateAuthorTag"/>
-	</rule>
 
 </ruleset>
